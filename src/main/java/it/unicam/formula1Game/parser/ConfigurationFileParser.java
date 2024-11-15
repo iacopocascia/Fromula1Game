@@ -1,7 +1,7 @@
-package parser;
+package it.unicam.formula1Game.parser;
 
-import exceptions.InvalidConfigurationException;
-import racetrack.RaceTrack;
+import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
+import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.io.File;
 

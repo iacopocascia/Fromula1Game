@@ -1,8 +1,10 @@
-package cell;
+package it.unicam.formula1Game.cell;
+
+import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.Objects;
 /**
- * Represents a coordinate in the {@link racetrack.RaceTrack}.
+ * Represents a coordinate in the {@link RaceTrack}.
  *
  */
 public class Coordinate {

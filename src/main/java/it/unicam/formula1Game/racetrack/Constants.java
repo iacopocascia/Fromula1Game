@@ -1,4 +1,4 @@
-package racetrack;
+package it.unicam.formula1Game.racetrack;
 
 /**
  * Some constant values that describe the {@link RaceTrack} class.

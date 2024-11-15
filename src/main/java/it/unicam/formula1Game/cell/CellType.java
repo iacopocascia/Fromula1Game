@@ -1,4 +1,4 @@
-package cell;
+package it.unicam.formula1Game.cell;
 
 /**
  * Enum representing the various types of cells that make up the track.

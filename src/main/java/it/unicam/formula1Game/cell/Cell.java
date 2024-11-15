@@ -1,4 +1,7 @@
-package cell;
+package it.unicam.formula1Game.cell;
+
+import it.unicam.formula1Game.racetrack.RaceTrack;
+
 /**
  * Represents a single cell in the track.
  */
@@ -8,7 +11,7 @@ public class Cell {
      */
     private final CellType cellType;
     /**
-     * The cell's position in the {@link racetrack.RaceTrack} as a {@link Coordinate}.
+     * The cell's position in the {@link RaceTrack} as a {@link Coordinate}.
      */
     private final Coordinate position;
 
