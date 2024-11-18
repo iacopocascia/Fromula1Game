@@ -54,6 +54,20 @@ public class RaceTrack {
     }
 
     /**
+     *
+     * @param position
+     * @return
+     */
+    public Cell getCellAt(Coordinate position){
+        int row=position.getRow();
+        int column=position.getColumn();
+        if(row < 0 || row >= this.height || column < 0 || column >= this.width){
+            throw new IllegalArgumentException("Position out of track boundaries");
+        }
+        return grid[row][column];
+    }
+
+    /**
      * Initializes and places the players on the start line.
      * Each player is assigned a random ID between 1 and 10, and players are evenly placed across the start line.
      */
@@ -108,6 +122,7 @@ public class RaceTrack {
         }
         return startLine;
     }
+
 
 
 }
