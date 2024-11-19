@@ -59,27 +59,6 @@ public class CpuPlayer implements Player {
                 this.position.getColumn() + this.lastMove.getColumn());
     }
 
-    /**
-     * Computes all the available moves that the player can make from their current position,
-     * based on the rules of the game.
-     *
-     * @return A {@link List} of {@link Coordinate} objects representing the valid moves.
-     */
-    @Override
-    public List<Coordinate> getAvailableMoves() {
-        List<Coordinate> availableMoves = new ArrayList<>();
-        Coordinate principalPoint = calculatePrincipalPoint();
-        // Iterate over all possible combinations of shifts (-1, 0, 1)
-        for (int rowShift = -1; rowShift <= 1; rowShift++) {
-            for (int colShift = -1; colShift <= 1; colShift++) {
-                // Add the move to the list
-                availableMoves.add(new Coordinate(principalPoint.getRow() + rowShift,
-                        principalPoint.getColumn() + colShift));
-            }
-        }
-        return availableMoves;
-    }
-
     public Coordinate getLastMove() {
         return lastMove;
     }

@@ -9,7 +9,6 @@ import it.unicam.formula1Game.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class RaceTrack {
@@ -75,7 +74,7 @@ public class RaceTrack {
         // Generate unique IDs for the players
         List<Integer> playerIds = generateUniquePlayerIds();
         // Get all START cells from the track
-        List<Coordinate> startLine = getStartLine();
+        List<Coordinate> startLine = getStartCoordinates();
         // Assign players to START cells in a round-robin fashion
         for (int i = 0; i < this.numberOfPlayers; i++) {
             int playerId = playerIds.get(i);
@@ -108,21 +107,44 @@ public class RaceTrack {
      *
      * @return A {@link List} of {@link Coordinate} of the starting cells.
      */
-    private List<Coordinate> getStartLine() throws InvalidConfigurationException {
-        List<Coordinate> startLine = new ArrayList<>();
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
+    public List<Coordinate> getStartCoordinates() throws InvalidConfigurationException {
+        List<Coordinate> startCoordinates = new ArrayList<>();
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
                 if (grid[i][j].cellType() == CellType.START) {
-                    startLine.add(new Coordinate(i, j));
+                    startCoordinates.add(new Coordinate(i, j));
                 }
             }
         }
-        if (startLine.isEmpty()) {
+        if (startCoordinates.isEmpty()) {
             throw new InvalidConfigurationException("No start cells found for this track");
         }
-        return startLine;
+        return startCoordinates;
     }
 
+    /**
+     * Gets all the <code>FINISH</code> cells positions in the track.
+     * @return A {@link List} of {@link Coordinate} of the finish cells.
+     */
+    public List<Coordinate> getFinishCoordinates(){
+        List<Coordinate> finishCoordinates=new ArrayList<>();
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                if(grid[i][j].cellType()==CellType.FINISH){
+                    finishCoordinates.add(new Coordinate(i,j));
+                }
+            }
+        }
+        return finishCoordinates;
+    }
 
-
+    /**
+     * Checks whether a certain position is within the track's boundaries.
+     * @param position The {@link Coordinate} object to check.
+     * @return <code>true</code> if it is within the boundaries, <code>false</code> otherwise.
+     */
+    public boolean isWithinBoundaries(Coordinate position) {
+        return position.getRow() <= this.height && position.getRow() >= 0
+                && position.getColumn() <= this.width && position.getColumn() >= 0;
+    }
 }

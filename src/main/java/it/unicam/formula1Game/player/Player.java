@@ -20,10 +20,5 @@ public interface Player {
      */
     Coordinate calculatePrincipalPoint();
 
-    /**
-     *
-     * @return
-     */
-    List<Coordinate> getAvailableMoves();
 
 }

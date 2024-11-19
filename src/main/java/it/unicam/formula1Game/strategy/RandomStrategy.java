@@ -2,18 +2,19 @@ package it.unicam.formula1Game.strategy;
 
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.player.CpuPlayer;
-import it.unicam.formula1Game.player.Player;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * The {@code RandomStrategy} class implements the {@link GameStrategy} interface and provides
+ * a randomized strategy for CPU players. The strategy evaluates all possible moves,
+ * assigning weights to each based on the cell type.
  */
 public class RandomStrategy implements GameStrategy {
     /**
-     * The {@link CpuPlayer} towards which the strategy will be applied.
+     * The {@link CpuPlayer} to apply the strategy to.
      */
     private final CpuPlayer player;
     /**
@@ -21,26 +22,61 @@ public class RandomStrategy implements GameStrategy {
      */
     private final RaceTrack track;
 
+    /**
+     * Constructs a new {@code RandomStrategy} with the specified player and racetrack.
+     *
+     * @param player the {@link CpuPlayer} to apply the strategy to.
+     * @param track  the {@link RaceTrack} where the game is being played.
+     */
     public RandomStrategy(CpuPlayer player, RaceTrack track) {
         this.player = player;
         this.track = track;
     }
+
     /**
-     *
+     * Applies the random strategy to the {@link CpuPlayer}.
+     * The player evaluates all possible moves, assigns weights to each move based on cell type,
+     * and then selects a move probabilistically.
      */
     @Override
     public void applyStrategy() {
-        List<Coordinate> weightedMoves=evaluateMoves();
+        List<Coordinate> weightedMoves = evaluateMoves();
         // Select a random move from the weighted moves list
         Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
         this.player.makeMove(selectedMove);
     }
 
     /**
-     * @return
+     * Computes the available moves as the {@link it.unicam.formula1Game.cell.Cell} objects that are
+     * within the {@link RaceTrack} boundaries.
+     * @return a {@link List} of {@link Coordinate} objects that represent the available moves.
+     */
+    @Override
+    public List<Coordinate> getAvailableMoves() {
+        List<Coordinate> availableMoves = new ArrayList<>();
+        Coordinate principalPoint = player.calculatePrincipalPoint();
+        // Iterate over all possible combinations of shifts (-1, 0, 1)
+        for (int rowShift = -1; rowShift <= 1; rowShift++) {
+            for (int colShift = -1; colShift <= 1; colShift++) {
+                // Add the move to the list if it is within the track boundaries
+                Coordinate move = new Coordinate(principalPoint.getRow() + rowShift,
+                        principalPoint.getColumn() + colShift);
+                if (track.isWithinBoundaries(move)) {
+                    availableMoves.add(move);
+                }
+            }
+        }
+        return availableMoves;
+    }
+
+    /**
+     * Evaluates the available moves for the player, assigning higher weights to moves
+     * leading to favorable cells and lower weights to unfavorable cells.
+     *
+     * @return A {@link List} of {@link Coordinate} objects representing weighted moves.
      */
     private List<Coordinate> evaluateMoves() {
-        List<Coordinate> availableMoves = player.getAvailableMoves();
+        List<Coordinate> availableMoves = this.getAvailableMoves();
         List<Coordinate> weightedMoves = new ArrayList<>();
         for (Coordinate move : availableMoves) {
             switch (this.track.getCellAt(move).cellType()) {
@@ -59,13 +95,14 @@ public class RandomStrategy implements GameStrategy {
                     break;
 
                 case FINISH:
-                    // Add the highest weight for finish cells (e.g., weight 10)
+                    // Add the highest weight for finish cells (weight 10)
                     addWeightedMoves(weightedMoves, move, 10);
                     break;
             }
         }
         return weightedMoves;
     }
+
     /**
      * Adds a move to the weighted moves list multiple times based on the weight.
      *
