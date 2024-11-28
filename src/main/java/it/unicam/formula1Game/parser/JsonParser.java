@@ -28,19 +28,19 @@ public class JsonParser implements ConfigurationFileParser {
     @Override
     public RaceTrack parse(File configurationFile) throws InvalidConfigurationException {
         // Ensure the file is a valid JSON
-        validateJsonFile(configurationFile);
+        //validateJsonFile(configurationFile);
         JsonNode jsonNode = readJson(configurationFile);
-        // Parse track's height and width
+        // Parse track's data
         int width = jsonNode.get("width").asInt();
         int height = jsonNode.get("height").asInt();
-        // Parse the number of players
         int numPlayers = jsonNode.get("numPlayers").asInt();
+        String direction = jsonNode.get("direction").asText();
         // Validate the parsed values
-        validateConfiguration(height, numPlayers, width);
+        //validateConfiguration(width, numPlayers, height);
         // Parse the track grid
         Cell[][] grid = parseGrid(jsonNode, width, height);
 
-        return new RaceTrack(width,height,grid,numPlayers);
+        return new RaceTrack(width, height, grid, numPlayers);
     }
 
     /**
@@ -58,8 +58,6 @@ public class JsonParser implements ConfigurationFileParser {
         } catch (IOException e) {
             throw new InvalidConfigurationException("Error reading the configuration file: " + e.getMessage());
         }
-
-
     }
 
     /**

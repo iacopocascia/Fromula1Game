@@ -2,9 +2,6 @@ package it.unicam.formula1Game.player;
 
 import it.unicam.formula1Game.cell.Coordinate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  */
@@ -25,12 +22,23 @@ public class CpuPlayer implements Player {
      * Stores the player's last move
      */
     private Coordinate lastMove;
+    /**
+     * Stores the player's velocity
+     */
+    private double velocity;
+
+    /**
+     *
+     * @param id
+     * @param position
+     */
 
     public CpuPlayer(int id, Coordinate position) {
         this.id = id;
         this.position = position;
         this.hasCrashed = false;
         this.lastMove = new Coordinate(0, 0);
+        this.velocity=0.0;
     }
 
     /**
@@ -45,6 +53,8 @@ public class CpuPlayer implements Player {
         this.lastMove.setColumn(move.getColumn()- position.getColumn());
         // Update position
         this.setPosition(move);
+        // Update velocity
+        this.calculateVelocity();
     }
 
     /**
@@ -85,5 +95,15 @@ public class CpuPlayer implements Player {
 
     public int getId() {
         return id;
+    }
+    public double getVelocity() {
+        return velocity;
+    }
+
+    /**
+     * Calculates and sets the velocity field
+     */
+    private void calculateVelocity() {
+        this.velocity=Math.sqrt(Math.pow(this.lastMove.getRow(), 2) + Math.pow(this.lastMove.getColumn(), 2));
     }
 }

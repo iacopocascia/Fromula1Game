@@ -147,4 +147,16 @@ public class RaceTrack {
         return position.getRow() <= this.height && position.getRow() >= 0
                 && position.getColumn() <= this.width && position.getColumn() >= 0;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Cell[][] getGrid() {
+        return grid;
+    }
 }

@@ -4,7 +4,7 @@ import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.Objects;
 /**
- * Represents a coordinate in the {@link RaceTrack}.
+ * Represents a coordinate.
  *
  */
 public class Coordinate {
