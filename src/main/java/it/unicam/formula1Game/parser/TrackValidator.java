@@ -1,15 +1,21 @@
 package it.unicam.formula1Game.parser;
 
+import it.unicam.formula1Game.racetrack.Constants;
+
 import static it.unicam.formula1Game.racetrack.Constants.*;
 
 /**
- *todo
+ * The {@code TrackValidator} class implements the {@link ITrackValidator} interface
+ * to provide concrete methods for validating the properties of a racetrack.
  */
 public class TrackValidator implements ITrackValidator {
 
     /**
-     * @param width
-     * @return
+     * Validates the width of the racetrack.
+     * The width is considered valid if it is greater than 0 and less than {@link Constants#MAX_WIDTH}.
+     *
+     * @param width The width of the track to validate.
+     * @return {@code true} if the width is valid, {@code false} otherwise.
      */
     @Override
     public boolean validateWidth(int width) {
@@ -17,8 +23,11 @@ public class TrackValidator implements ITrackValidator {
     }
 
     /**
-     * @param height
-     * @return
+     * Validates the height of the racetrack.
+     * The height is considered valid if it is greater than 0 and less than {@link Constants#MAX_HEIGHT}.
+     *
+     * @param height The height of the track to validate.
+     * @return {@code true} if the height is valid, {@code false} otherwise.
      */
     @Override
     public boolean validateHeight(int height) {
@@ -26,8 +35,12 @@ public class TrackValidator implements ITrackValidator {
     }
 
     /**
-     * @param numberOfPlayers
-     * @return
+     * Validates the number of players on the racetrack.
+     * The number is valid if it falls within the range defined by {@link Constants#MIN_PLAYERS}
+     * and {@link Constants#MAX_PLAYERS}.
+     *
+     * @param numberOfPlayers The number of players to validate.
+     * @return {@code true} if the number of players is within the allowed range, {@code false} otherwise.
      */
     @Override
     public boolean validateNumberOfPlayers(int numberOfPlayers) {
@@ -35,8 +48,11 @@ public class TrackValidator implements ITrackValidator {
     }
 
     /**
-     * @param direction
-     * @return
+     * Validates the direction of the race on the racetrack.
+     * The direction is valid if it is either "cw" (clockwise) or "ccw" (counter-clockwise).
+     *
+     * @param direction The direction of the race to validate.
+     * @return {@code true} if the direction is valid, {@code false} otherwise.
      */
     @Override
     public boolean validateDirection(String direction) {

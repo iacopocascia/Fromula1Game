@@ -1,6 +1,7 @@
 package it.unicam.formula1Game.player;
 
 import it.unicam.formula1Game.cell.Coordinate;
+import it.unicam.formula1Game.racetrack.RaceTrack;
 
 /**
  *
@@ -69,6 +70,11 @@ public class CpuPlayer implements Player {
                 this.position.getColumn() + this.lastMove.getColumn());
     }
 
+    @Override
+    public boolean hasCrashed() {
+        return hasCrashed;
+    }
+
     public Coordinate getLastMove() {
         return lastMove;
     }
@@ -77,25 +83,35 @@ public class CpuPlayer implements Player {
         this.lastMove = lastMove;
     }
 
-    public boolean isHasCrashed() {
-        return hasCrashed;
-    }
 
     public void setHasCrashed(boolean hasCrashed) {
         this.hasCrashed = hasCrashed;
     }
 
+    /**
+     * Gets the player's position on the {@link RaceTrack}.
+     *
+     * @return a {@link Coordinate} object representing the player's position.
+     */
+    @Override
     public Coordinate getPosition() {
-        return position;
+        return this.position;
+    }
+
+    /**
+     * Gets the player's unique identifier.
+     *
+     * @return the <code>Integer</code> value representing the player.
+     */
+    @Override
+    public int getId() {
+        return this.id;
     }
 
     public void setPosition(Coordinate position) {
         this.position = position;
     }
 
-    public int getId() {
-        return id;
-    }
     public double getVelocity() {
         return velocity;
     }

@@ -3,13 +3,15 @@ package it.unicam.formula1Game.parser;
 import java.io.File;
 
 /**
- * todo
+ * The {@code ConfigurationFileValidator} interface defines the contract for validating
+ * configuration files used in the game.
  */
 public interface ConfigurationFileValidator {
     /**
+     * Validates the given configuration file to ensure it meets the required criteria.
      *
-     * @param configurationFile
-     * @return
+     * @param configurationFile The {@link File} object representing the configuration file to validate.
+     * @return {@code true} if the file is valid, {@code false} otherwise.
      */
     boolean validate(File configurationFile);
 }

@@ -1,7 +1,5 @@
 package it.unicam.formula1Game.cell;
 
-import it.unicam.formula1Game.racetrack.RaceTrack;
-
 import java.util.Objects;
 /**
  * Represents a coordinate.
@@ -47,5 +45,16 @@ public class Coordinate {
     @Override
     public int hashCode() {
         return Objects.hash(row, column);
+    }
+
+    /**
+     * Calculates the Manhattan distance between two coordinates.
+     *
+     * @param a The first coordinate.
+     * @param b The second coordinate.
+     * @return The distance value between the two coordinates.
+     */
+    public static int calculateDistance(Coordinate a, Coordinate b){
+        return Math.abs(a.getRow() - b.getRow()) + Math.abs(a.getColumn() - b.getColumn());
     }
 }

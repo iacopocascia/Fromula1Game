@@ -10,18 +10,29 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Handles the detection of landing regions in a racetrack.
- * Landing regions represent critical segments in the track where players
- * might need to adjust their strategy, such as corners or transitions between straightaways.
+ * The {@code LandingRegionsDetector} class implements the {@link ILandingRegionsDetector} interface.
+ * It is responsible for detecting landing regions in a {@link RaceTrack}.
+ * Landing regions represent critical segments where players may need to adjust their strategy,
+ * such as corners or transitions between straightaways.
  */
 public class LandingRegionsDetector implements ILandingRegionsDetector {
+    private final RaceTrack raceTrack;
+
+    public LandingRegionsDetector(RaceTrack raceTrack) {
+        this.raceTrack = raceTrack;
+    }
+
     /**
-     * @return
+     * Detects landing regions in the given {@link RaceTrack} by
+     * combining horizontal and vertical {@link Segment} detection to identify
+     * all critical regions in the track.
+     *
+     * @return a {@link List} of {@link Segment} objects representing the landing regions.
      */
     @Override
-    public List<Segment> detectLandingRegions(RaceTrack raceTrack) {
-        Map<Integer, List<Segment>> horizontalSegments = calculateSegments(true, raceTrack);
-        Map<Integer, List<Segment>> verticalSegments = calculateSegments(false, raceTrack);
+    public List<Segment> detectLandingRegions() {
+        Map<Integer, List<Segment>> horizontalSegments = calculateSegments(true);
+        Map<Integer, List<Segment>> verticalSegments = calculateSegments(false);
         List<Segment> horizontalLandingRegions = applyDetectionLogic(horizontalSegments);
         List<Segment> verticalLandingRegions = applyDetectionLogic(verticalSegments);
         return Stream.concat(horizontalLandingRegions.stream(), verticalLandingRegions.stream())
@@ -32,20 +43,19 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
      * Finds segments of contiguous track cells in the grid, either horizontally or vertically.
      *
      * @param isRowBased a flag indicating whether to find horizontal segments (true) or vertical segments (false).
-     * @param track      the {@link RaceTrack} object where to calculate the segments.
      * @return a {@link Map} where the key is the row or column index, and the value is a {@link List} of {@link Segment} objects.
      */
-    private Map<Integer, List<Segment>> calculateSegments(boolean isRowBased, RaceTrack track) {
+    private Map<Integer, List<Segment>> calculateSegments(boolean isRowBased) {
         Map<Integer, List<Segment>> segmentsMap = new HashMap<>();
 
-        int outerLimit = isRowBased ? track.getHeight() : track.getWidth();
-        int innerLimit = isRowBased ? track.getWidth() : track.getHeight();
+        int outerLimit = isRowBased ? raceTrack.getHeight() : raceTrack.getWidth();
+        int innerLimit = isRowBased ? raceTrack.getWidth() : raceTrack.getHeight();
         for (int outer = 0; outer < outerLimit; outer++) {
             List<Segment> segments = new ArrayList<>();
             Segment currentSegment = null;
 
             for (int inner = 0; inner < innerLimit; inner++) {
-                Cell cell = isRowBased ? track.getGrid()[outer][inner] : track.getGrid()[inner][outer];
+                Cell cell = isRowBased ? raceTrack.getGrid()[outer][inner] : raceTrack.getGrid()[inner][outer];
 
                 if (cell.cellType() == CellType.TRACK) {
                     if (currentSegment == null) {
@@ -71,7 +81,7 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
     }
 
     /**
-     * Detects landing regions based on changes in the number of track segments.
+     * Applies the detection logic based on changes in the number of track segments.
      * A landing region is identified when the number of segments increases or decreases
      * (excluding transitions from 0 to n or n to 0).
      *

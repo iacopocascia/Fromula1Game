@@ -40,7 +40,7 @@ public class JsonParser implements ConfigurationFileParser {
         // Parse the track grid
         Cell[][] grid = parseGrid(jsonNode, width, height);
 
-        return new RaceTrack(width, height, grid, numPlayers);
+        return new RaceTrack(width, height, grid, numPlayers,direction);
     }
 
     /**

@@ -1,5 +1,7 @@
 package it.unicam.formula1Game.engine;
 
+import it.unicam.formula1Game.racetrack.RaceTrack;
+
 /**
  * The {@code GameEngine} interface defines the main logic for running a game.
  * It manages the game lifecycle, including initialization, player moves, and end conditions.
@@ -10,7 +12,7 @@ public interface GameEngine {
      * Initializes the game environment.
      * This method sets up the game environment, including loading players and setting initial conditions.
      */
-    void initializeEnvironment();
+    void initializeEnvironment(RaceTrack raceTrack);
 
     /**
      * Starts the game loop where players take turns until the game ends.

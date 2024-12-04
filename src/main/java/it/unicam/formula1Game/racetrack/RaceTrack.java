@@ -12,9 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class RaceTrack {
-    //TODO valutare se inserire o meno i campi width, height e numPlayers
-    // perchè sono ricavabili dalla grid
-
     /**
      * The track's total width
      */
@@ -35,32 +32,40 @@ public class RaceTrack {
      * The players that take part in the race
      */
     private final Player[] players;
+    /**
+     * The direction of the race: clockwise or counter-clockwise
+     */
+    private final String direction;
+    /**
+     * The track's visual representation
+     */
+    private final String[][] visualGridRepresentation;
 
     /**
-     * Creates a new racetrack and initializes the players info
-     * @param width
-     * @param height
-     * @param grid
+     * Creates a new racetrack
      */
 
-    public RaceTrack(int width, int height, Cell[][] grid, int numberOfPlayers) throws InvalidConfigurationException {
+    public RaceTrack(int width, int height, Cell[][] grid, int numberOfPlayers, String direction) throws InvalidConfigurationException {
         this.width = width;
         this.height = height;
         this.grid = grid;
         this.numberOfPlayers = numberOfPlayers;
         this.players = new Player[numberOfPlayers];
-        placePlayers();
+        this.direction = direction;
+        this.visualGridRepresentation = buildTrackRepresentation();
     }
 
     /**
+     * Retrieves the {@link Cell} at the specified position on the racetrack grid.
      *
-     * @param position
-     * @return
+     * @param position The {@link Coordinate} object representing the position of the cell to retrieve.
+     * @return The {@link Cell} located at the specified position on the racetrack.
+     * @throws IllegalArgumentException If the specified position is out of the track boundaries.
      */
-    public Cell getCellAt(Coordinate position){
-        int row=position.getRow();
-        int column=position.getColumn();
-        if(row < 0 || row >= this.height || column < 0 || column >= this.width){
+    public Cell getCellAt(Coordinate position) {
+        int row = position.getRow();
+        int column = position.getColumn();
+        if (row < 0 || row >= this.height || column < 0 || column >= this.width) {
             throw new IllegalArgumentException("Position out of track boundaries");
         }
         return grid[row][column];
@@ -70,7 +75,7 @@ public class RaceTrack {
      * Initializes and places the players on the start line.
      * Each player is assigned a random ID between 1 and 10, and players are evenly placed across the start line.
      */
-    private void placePlayers() throws InvalidConfigurationException {
+    public void placeCpuPlayers() throws InvalidConfigurationException {
         // Generate unique IDs for the players
         List<Integer> playerIds = generateUniquePlayerIds();
         // Get all START cells from the track
@@ -89,7 +94,7 @@ public class RaceTrack {
     /**
      * Generates a list of unique random IDs between 1 and 10 for the given number of players.
      *
-     * @return a list of unique player IDs
+     * @return a list of unique player IDs.
      */
     private List<Integer> generateUniquePlayerIds() {
         List<Integer> availableIds = new ArrayList<>();
@@ -124,14 +129,15 @@ public class RaceTrack {
 
     /**
      * Gets all the <code>FINISH</code> cells positions in the track.
+     *
      * @return A {@link List} of {@link Coordinate} of the finish cells.
      */
-    public List<Coordinate> getFinishCoordinates(){
-        List<Coordinate> finishCoordinates=new ArrayList<>();
+    public List<Coordinate> getFinishCoordinates() {
+        List<Coordinate> finishCoordinates = new ArrayList<>();
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
-                if(grid[i][j].cellType()==CellType.FINISH){
-                    finishCoordinates.add(new Coordinate(i,j));
+                if (grid[i][j].cellType() == CellType.FINISH) {
+                    finishCoordinates.add(new Coordinate(i, j));
                 }
             }
         }
@@ -140,6 +146,7 @@ public class RaceTrack {
 
     /**
      * Checks whether a certain position is within the track's boundaries.
+     *
      * @param position The {@link Coordinate} object to check.
      * @return <code>true</code> if it is within the boundaries, <code>false</code> otherwise.
      */
@@ -149,14 +156,78 @@ public class RaceTrack {
     }
 
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     public Cell[][] getGrid() {
-        return grid;
+        return this.grid;
+    }
+
+    public String getDirection() {
+        return this.direction;
+    }
+
+    public int getNumberOfPlayers() {
+        return this.numberOfPlayers;
+    }
+
+    public ArrayList<CpuPlayer> getCpuPlayers() {
+        ArrayList<CpuPlayer> cpuPlayers = new ArrayList<>();
+        for (Player player : this.players) {
+            if (player instanceof CpuPlayer) {
+                cpuPlayers.add((CpuPlayer) player);
+            }
+        }
+        return cpuPlayers;
+    }
+
+    public Player[] getPlayers() {
+        return players;
+    }
+
+    public String[][] getVisualGridRepresentation() {
+        return visualGridRepresentation;
+    }
+
+    /**
+     * Calls the static method <code>visualizeRaceTrack()</code> of the {@link RaceTrackVisualizer} class.
+     */
+    @Override
+    public String toString() {
+        return RaceTrackVisualizer.visualizeRacetrack(this);
+    }
+
+    /**
+     * Builds a 2D array of strings representing the static part of the track grid
+     * without players.
+     *
+     * @return a 2D array of strings representing the grid
+     */
+    private String[][] buildTrackRepresentation() {
+        String[][] trackRepresentation = new String[height][width];
+        for (int row = 0; row < height; row++) {
+            for (int column = 0; column < width; column++) {
+                CellType cell = grid[row][column].cellType();
+                switch (cell) {
+                    case WALL:
+                        trackRepresentation[row][column] = "*"; // Outer Wall
+                        break;
+                    case START:
+                        trackRepresentation[row][column] = "+";  // Start line
+                        break;
+                    case FINISH:
+                        trackRepresentation[row][column] = "-";  // Finish line
+                        break;
+                    case TRACK:
+                        trackRepresentation[row][column] = " ";  // Track (empty space)
+                        break;
+                }
+            }
+        }
+        return trackRepresentation;
     }
 }

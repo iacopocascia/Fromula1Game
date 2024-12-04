@@ -5,7 +5,9 @@ import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The {@code RandomStrategy} class implements the {@link GameStrategy} interface and provides
@@ -40,20 +42,26 @@ public class RandomStrategy implements GameStrategy {
      */
     @Override
     public void applyStrategy() {
-        List<Coordinate> weightedMoves = evaluateMoves();
-        // Select a random move from the weighted moves list
-        Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
-        this.player.makeMove(selectedMove);
+        Set<Coordinate> availableMoves=getAvailableMoves();
+        if(!availableMoves.isEmpty()) {
+            List<Coordinate> weightedMoves = evaluateMoves(availableMoves);
+            // Select a random move from the weighted moves list
+            Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
+            this.player.makeMove(selectedMove);
+        }else {
+            this.player.setHasCrashed(true);
+        }
     }
 
     /**
      * Computes the available moves as the {@link it.unicam.formula1Game.cell.Cell} objects that are
      * within the {@link RaceTrack} boundaries.
+     *
      * @return a {@link List} of {@link Coordinate} objects that represent the available moves.
      */
     @Override
-    public List<Coordinate> getAvailableMoves() {
-        List<Coordinate> availableMoves = new ArrayList<>();
+    public Set<Coordinate> getAvailableMoves() {
+        Set<Coordinate> availableMoves = new HashSet<>();
         Coordinate principalPoint = player.calculatePrincipalPoint();
         // Iterate over all possible combinations of shifts (-1, 0, 1)
         for (int rowShift = -1; rowShift <= 1; rowShift++) {
@@ -75,8 +83,7 @@ public class RandomStrategy implements GameStrategy {
      *
      * @return A {@link List} of {@link Coordinate} objects representing weighted moves.
      */
-    private List<Coordinate> evaluateMoves() {
-        List<Coordinate> availableMoves = this.getAvailableMoves();
+    private List<Coordinate> evaluateMoves(Set<Coordinate> availableMoves) {
         List<Coordinate> weightedMoves = new ArrayList<>();
         for (Coordinate move : availableMoves) {
             switch (this.track.getCellAt(move).cellType()) {

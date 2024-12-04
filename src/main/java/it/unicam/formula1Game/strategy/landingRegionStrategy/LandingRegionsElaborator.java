@@ -10,16 +10,26 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 /**
- *
+ * The {@code LandingRegionsElaborator} class implements the {@link ILandingRegionsElaborator} interface.
+ * It is responsible for processing and organizing landing region segments into prioritized lists
+ * of coordinates, sorted by quadrants and removing duplicates.
  */
 public class LandingRegionsElaborator implements ILandingRegionsElaborator{
+    private final RaceTrack raceTrack;
+
+    public LandingRegionsElaborator(RaceTrack raceTrack) {
+        this.raceTrack = raceTrack;
+    }
+
     /**
-     * @param landingRegions
-     * @param raceTrack
-     * @return
+     * Elaborates landing regions by extracting their coordinates, dividing them into quadrants,
+     * sorting each quadrant, and reassembling the coordinates into a unified prioritized list.
+     *
+     * @param landingRegions A {@link List} of {@link Segment} objects representing landing regions.
+     * @return A {@link List} of {@link Coordinate} objects representing the processed and prioritized landing regions.
      */
     @Override
-    public List<Coordinate> elaborateLandingRegions(List<Segment> landingRegions, RaceTrack raceTrack) {
+    public List<Coordinate> elaborateLandingRegions(List<Segment> landingRegions) {
         // Extract coordinates
         List<Coordinate> allLandingRegionsCoordinates = extractCoordinates(landingRegions);
         // Filter each quadrant

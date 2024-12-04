@@ -3,6 +3,7 @@ package it.unicam.formula1Game.strategy;
 import it.unicam.formula1Game.cell.Coordinate;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The {@code GameStrategy} interface defines the contract for implementing a game strategy.
@@ -20,5 +21,5 @@ public interface GameStrategy {
      *
      * @return A {@link List} of {@link Coordinate} objects representing the valid moves.
      */
-    List<Coordinate> getAvailableMoves();
+    Set<Coordinate> getAvailableMoves();
 }
