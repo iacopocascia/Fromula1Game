@@ -1,6 +1,7 @@
 package it.unicam.formula1Game.strategy.landingRegionStrategy;
 
 import it.unicam.formula1Game.cell.Coordinate;
+import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 import it.unicam.formula1Game.strategy.GameStrategy;
@@ -17,24 +18,18 @@ import static it.unicam.formula1Game.cell.Coordinate.calculateDistance;
  * players must adjust their strategy for optimal performance.
  */
 public class LandingRegionsStrategy implements GameStrategy {
-    private final RaceTrack track;
-    private final CpuPlayer player;
-    private final ILandingRegionsDetector landingRegionsDetector;
-    private final ILandingRegionsElaborator landingRegionsElaborator;
+    private final RaceTrack raceTrack;
+    private final LandingRegionsProcessor landingRegionsProcessor;
     private final List<Coordinate> path;
     /**
      * Constructs a {@code LandingRegionsStrategy} with the provided dependencies.
-     *
-     * @param track                     the {@link RaceTrack} on which the strategy will be applied.
-     * @param player                    the {@link CpuPlayer} who will use this strategy.
-     * @param landingRegionsDetector    the {@link ILandingRegionsDetector} for detecting landing regions.
-     * @param landingRegionsElaborator  the {@link ILandingRegionsElaborator} for processing landing regions.
+     * <p>
+     *  @param raceTrack                     the {@link RaceTrack} on which the strategy will be applied.
+     *  @param landingRegionsProcessor       the {@link LandingRegionsProcessor} object used to build the path.
      */
-    public LandingRegionsStrategy(RaceTrack track, CpuPlayer player, ILandingRegionsDetector landingRegionsDetector, ILandingRegionsElaborator landingRegionsElaborator) {
-        this.track = track;
-        this.player = player;
-        this.landingRegionsDetector = landingRegionsDetector;
-        this.landingRegionsElaborator = landingRegionsElaborator;
+    public LandingRegionsStrategy(RaceTrack raceTrack, LandingRegionsProcessor landingRegionsProcessor) {
+        this.raceTrack = raceTrack;
+        this.landingRegionsProcessor = landingRegionsProcessor;
         this.path = initializePath();
     }
 
@@ -45,8 +40,8 @@ public class LandingRegionsStrategy implements GameStrategy {
      * @return the {@link List} of {@link Coordinate} objects representing the path.
      */
     private List<Coordinate> initializePath() {
-        List<Coordinate> path = landingRegionsElaborator.elaborateLandingRegions(landingRegionsDetector.detectLandingRegions());
-        path.addAll(track.getFinishCoordinates());
+        List<Coordinate> path = landingRegionsProcessor.processLandingRegions(this.raceTrack);
+        path.addAll(raceTrack.getFinishCoordinates());
         return path;
     }
 
@@ -56,8 +51,8 @@ public class LandingRegionsStrategy implements GameStrategy {
      * move is determined based on proximity to the path.
      */
     @Override
-    public void applyStrategy() {
-        Set<Coordinate> availableMoves = getAvailableMoves();
+    public void applyStrategy(CpuPlayer player) {
+        Set<Coordinate> availableMoves = getAvailableMoves(player);
         if (!availableMoves.isEmpty()) {
             for (int i = 0; i < path.size(); i++) {
                 Coordinate pathCoordinate = path.get(i);
@@ -68,7 +63,7 @@ public class LandingRegionsStrategy implements GameStrategy {
                     return; // Exit early after making the move
                 }
             }
-            handleFallBackMove(availableMoves); // Only called if no move was made
+            handleFallBackMove(availableMoves,player); // Only called if no move was made
         } else {
             player.setHasCrashed(true);
         }
@@ -81,7 +76,7 @@ public class LandingRegionsStrategy implements GameStrategy {
      *
      * @param availableMoves the {@link Set} of available moves for the player.
      */
-    private void handleFallBackMove(Set<Coordinate> availableMoves) {
+    private void handleFallBackMove(Set<Coordinate> availableMoves, CpuPlayer player) {
         Coordinate fallbackMove = null;
         double bestScore = Double.MAX_VALUE; // Lower score is better
         for (Coordinate availableMove : availableMoves) {
@@ -112,7 +107,7 @@ public class LandingRegionsStrategy implements GameStrategy {
      * @return a {@link List} of {@link Coordinate} objects that represent the available moves.
      */
     @Override
-    public Set<Coordinate> getAvailableMoves() {
+    public Set<Coordinate> getAvailableMoves(CpuPlayer player) {
         Set<Coordinate> availableMoves = new HashSet<>();
         Coordinate principalPoint = player.calculatePrincipalPoint();
         // Iterate over all possible combinations of shifts (-1, 0, 1)
@@ -121,7 +116,7 @@ public class LandingRegionsStrategy implements GameStrategy {
                 // Add the move to the list if it is within the track boundaries
                 Coordinate move = new Coordinate(principalPoint.getRow() + rowShift,
                         principalPoint.getColumn() + colShift);
-                if (track.isWithinBoundaries(move)) {
+                if (raceTrack.isWithinBoundaries(move)) {
                     availableMoves.add(move);
                 }
             }

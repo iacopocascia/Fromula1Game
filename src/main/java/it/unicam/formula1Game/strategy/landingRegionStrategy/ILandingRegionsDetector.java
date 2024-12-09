@@ -1,5 +1,7 @@
 package it.unicam.formula1Game.strategy.landingRegionStrategy;
 
+import it.unicam.formula1Game.racetrack.RaceTrack;
+
 import java.util.List;
 
 /**
@@ -13,6 +15,6 @@ public interface ILandingRegionsDetector {
      *
      * @return A {@link List} of {@link Segment} objects representing the detected landing regions.
      */
-    List<Segment> detectLandingRegions();
+    List<Segment> detectLandingRegions(RaceTrack raceTrack);
 }
 

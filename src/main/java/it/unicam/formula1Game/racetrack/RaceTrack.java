@@ -29,10 +29,6 @@ public class RaceTrack {
      */
     private final int numberOfPlayers;
     /**
-     * The players that take part in the race
-     */
-    private final Player[] players;
-    /**
      * The direction of the race: clockwise or counter-clockwise
      */
     private final String direction;
@@ -50,7 +46,7 @@ public class RaceTrack {
         this.height = height;
         this.grid = grid;
         this.numberOfPlayers = numberOfPlayers;
-        this.players = new Player[numberOfPlayers];
+        //this.players = new Player[numberOfPlayers];
         this.direction = direction;
         this.visualGridRepresentation = buildTrackRepresentation();
     }
@@ -69,42 +65,6 @@ public class RaceTrack {
             throw new IllegalArgumentException("Position out of track boundaries");
         }
         return grid[row][column];
-    }
-
-    /**
-     * Initializes and places the players on the start line.
-     * Each player is assigned a random ID between 1 and 10, and players are evenly placed across the start line.
-     */
-    public void placeCpuPlayers() throws InvalidConfigurationException {
-        // Generate unique IDs for the players
-        List<Integer> playerIds = generateUniquePlayerIds();
-        // Get all START cells from the track
-        List<Coordinate> startLine = getStartCoordinates();
-        // Assign players to START cells in a round-robin fashion
-        for (int i = 0; i < this.numberOfPlayers; i++) {
-            int playerId = playerIds.get(i);
-            Coordinate startPosition = startLine.get(i % startLine.size()); // Cycle through start line positions
-            // Create a player and place it on the track
-            this.players[i] = new CpuPlayer(playerId, new Coordinate(startPosition.getRow(), startPosition.getColumn()));
-
-        }
-
-    }
-
-    /**
-     * Generates a list of unique random IDs between 1 and 10 for the given number of players.
-     *
-     * @return a list of unique player IDs.
-     */
-    private List<Integer> generateUniquePlayerIds() {
-        List<Integer> availableIds = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            availableIds.add(i);  // Add IDs from 1 to 10
-        }
-
-        Collections.shuffle(availableIds);  // Shuffle the list to randomize IDs
-
-        return availableIds.subList(0, this.numberOfPlayers);  // Return only the number of IDs needed for the players
     }
 
     /**
@@ -173,20 +133,6 @@ public class RaceTrack {
 
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
-    }
-
-    public ArrayList<CpuPlayer> getCpuPlayers() {
-        ArrayList<CpuPlayer> cpuPlayers = new ArrayList<>();
-        for (Player player : this.players) {
-            if (player instanceof CpuPlayer) {
-                cpuPlayers.add((CpuPlayer) player);
-            }
-        }
-        return cpuPlayers;
-    }
-
-    public Player[] getPlayers() {
-        return players;
     }
 
     public String[][] getVisualGridRepresentation() {

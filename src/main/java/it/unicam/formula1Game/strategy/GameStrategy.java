@@ -1,6 +1,7 @@
 package it.unicam.formula1Game.strategy;
 
 import it.unicam.formula1Game.cell.Coordinate;
+import it.unicam.formula1Game.player.CpuPlayer;
 
 import java.util.List;
 import java.util.Set;
@@ -11,9 +12,9 @@ import java.util.Set;
  */
 public interface GameStrategy {
     /**
-     * Applies the defined strategy within the game context.
+     * Applies the defined strategy to the within the game context.
      */
-    void applyStrategy();
+    void applyStrategy(CpuPlayer player);
 
     /**
      * Computes all the available moves that a player can make from their current position,
@@ -21,5 +22,5 @@ public interface GameStrategy {
      *
      * @return A {@link List} of {@link Coordinate} objects representing the valid moves.
      */
-    Set<Coordinate> getAvailableMoves();
+    Set<Coordinate> getAvailableMoves(CpuPlayer player);
 }

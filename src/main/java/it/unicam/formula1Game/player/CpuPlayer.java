@@ -2,31 +2,36 @@ package it.unicam.formula1Game.player;
 
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.racetrack.RaceTrack;
+import it.unicam.formula1Game.strategy.GameStrategy;
 
 /**
- *
+ *todo
  */
 public class CpuPlayer implements Player {
     /**
-     * Unique number that identifies a player on the track
+     * Unique number that identifies the player during a game.
      */
     private final int id;
     /**
-     * The player's position in the track
+     * The player's position on the track.
      */
     private Coordinate position;
     /**
-     * Specifies whether the player has crashed or not
+     * Specifies whether the player has crashed or not.
      */
     private boolean hasCrashed;
     /**
-     * Stores the player's last move
+     * Stores the player's last move.
      */
     private Coordinate lastMove;
     /**
-     * Stores the player's velocity
+     * Stores the player's velocity.
      */
     private double velocity;
+    /**
+     * Specifies the strategy that the player follows.
+     */
+    private GameStrategy strategy;
 
     /**
      *
@@ -117,9 +122,24 @@ public class CpuPlayer implements Player {
     }
 
     /**
-     * Calculates and sets the velocity field
+     * Calculates and sets the velocity field.
      */
     private void calculateVelocity() {
         this.velocity=Math.sqrt(Math.pow(this.lastMove.getRow(), 2) + Math.pow(this.lastMove.getColumn(), 2));
+    }
+
+    public void setStrategy(GameStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public GameStrategy getStrategy() {
+        return strategy;
+    }
+
+    /**
+     * Executes the assigned {@link GameStrategy}.
+     */
+    public void applyStrategy(){
+        this.strategy.applyStrategy(this);
     }
 }

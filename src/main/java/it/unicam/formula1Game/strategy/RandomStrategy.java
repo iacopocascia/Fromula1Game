@@ -1,13 +1,11 @@
 package it.unicam.formula1Game.strategy;
 
 import it.unicam.formula1Game.cell.Coordinate;
+import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The {@code RandomStrategy} class implements the {@link GameStrategy} interface and provides
@@ -16,23 +14,17 @@ import java.util.Set;
  */
 public class RandomStrategy implements GameStrategy {
     /**
-     * The {@link CpuPlayer} to apply the strategy to.
-     */
-    private final CpuPlayer player;
-    /**
      * The {@link RaceTrack} where the game takes place.
      */
-    private final RaceTrack track;
+    private final RaceTrack raceTrack;
 
     /**
-     * Constructs a new {@code RandomStrategy} with the specified player and racetrack.
+     * Constructs a new {@code RandomStrategy} with the specified racetrack.
      *
-     * @param player the {@link CpuPlayer} to apply the strategy to.
-     * @param track  the {@link RaceTrack} where the game is being played.
+     * @param raceTrack  the {@link RaceTrack} where the game is being played.
      */
-    public RandomStrategy(CpuPlayer player, RaceTrack track) {
-        this.player = player;
-        this.track = track;
+    public RandomStrategy(RaceTrack raceTrack) {
+        this.raceTrack = raceTrack;
     }
 
     /**
@@ -41,15 +33,15 @@ public class RandomStrategy implements GameStrategy {
      * and then selects a move probabilistically.
      */
     @Override
-    public void applyStrategy() {
-        Set<Coordinate> availableMoves=getAvailableMoves();
+    public void applyStrategy(CpuPlayer player) {
+        Set<Coordinate> availableMoves=getAvailableMoves(player);
         if(!availableMoves.isEmpty()) {
             List<Coordinate> weightedMoves = evaluateMoves(availableMoves);
             // Select a random move from the weighted moves list
             Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
-            this.player.makeMove(selectedMove);
+            player.makeMove(selectedMove);
         }else {
-            this.player.setHasCrashed(true);
+            player.setHasCrashed(true);
         }
     }
 
@@ -60,7 +52,7 @@ public class RandomStrategy implements GameStrategy {
      * @return a {@link List} of {@link Coordinate} objects that represent the available moves.
      */
     @Override
-    public Set<Coordinate> getAvailableMoves() {
+    public Set<Coordinate> getAvailableMoves(CpuPlayer player) {
         Set<Coordinate> availableMoves = new HashSet<>();
         Coordinate principalPoint = player.calculatePrincipalPoint();
         // Iterate over all possible combinations of shifts (-1, 0, 1)
@@ -69,7 +61,7 @@ public class RandomStrategy implements GameStrategy {
                 // Add the move to the list if it is within the track boundaries
                 Coordinate move = new Coordinate(principalPoint.getRow() + rowShift,
                         principalPoint.getColumn() + colShift);
-                if (track.isWithinBoundaries(move)) {
+                if (this.raceTrack.isWithinBoundaries(move)) {
                     availableMoves.add(move);
                 }
             }
@@ -86,7 +78,7 @@ public class RandomStrategy implements GameStrategy {
     private List<Coordinate> evaluateMoves(Set<Coordinate> availableMoves) {
         List<Coordinate> weightedMoves = new ArrayList<>();
         for (Coordinate move : availableMoves) {
-            switch (this.track.getCellAt(move).cellType()) {
+            switch (this.raceTrack.getCellAt(move).cellType()) {
                 case WALL:
                     // Add fewer instances for wall cells (weight 1)
                     addWeightedMoves(weightedMoves, move, 1);

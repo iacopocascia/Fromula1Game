@@ -16,12 +16,6 @@ import java.util.stream.Stream;
  * such as corners or transitions between straightaways.
  */
 public class LandingRegionsDetector implements ILandingRegionsDetector {
-    private final RaceTrack raceTrack;
-
-    public LandingRegionsDetector(RaceTrack raceTrack) {
-        this.raceTrack = raceTrack;
-    }
-
     /**
      * Detects landing regions in the given {@link RaceTrack} by
      * combining horizontal and vertical {@link Segment} detection to identify
@@ -30,9 +24,9 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
      * @return a {@link List} of {@link Segment} objects representing the landing regions.
      */
     @Override
-    public List<Segment> detectLandingRegions() {
-        Map<Integer, List<Segment>> horizontalSegments = calculateSegments(true);
-        Map<Integer, List<Segment>> verticalSegments = calculateSegments(false);
+    public List<Segment> detectLandingRegions(RaceTrack raceTrack) {
+        Map<Integer, List<Segment>> horizontalSegments = calculateSegments(true,raceTrack);
+        Map<Integer, List<Segment>> verticalSegments = calculateSegments(false,raceTrack);
         List<Segment> horizontalLandingRegions = applyDetectionLogic(horizontalSegments);
         List<Segment> verticalLandingRegions = applyDetectionLogic(verticalSegments);
         return Stream.concat(horizontalLandingRegions.stream(), verticalLandingRegions.stream())
@@ -43,9 +37,10 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
      * Finds segments of contiguous track cells in the grid, either horizontally or vertically.
      *
      * @param isRowBased a flag indicating whether to find horizontal segments (true) or vertical segments (false).
+     * @param raceTrack
      * @return a {@link Map} where the key is the row or column index, and the value is a {@link List} of {@link Segment} objects.
      */
-    private Map<Integer, List<Segment>> calculateSegments(boolean isRowBased) {
+    private Map<Integer, List<Segment>> calculateSegments(boolean isRowBased, RaceTrack raceTrack) {
         Map<Integer, List<Segment>> segmentsMap = new HashMap<>();
 
         int outerLimit = isRowBased ? raceTrack.getHeight() : raceTrack.getWidth();

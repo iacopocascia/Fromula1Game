@@ -6,9 +6,12 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.exceptions.InvalidFileFormatException;
 import it.unicam.formula1Game.parser.*;
 import it.unicam.formula1Game.racetrack.RaceTrack;
+import it.unicam.formula1Game.strategy.GameStrategy;
+import it.unicam.formula1Game.strategy.RandomStrategy;
 
 import java.io.File;
 import java.nio.file.NoSuchFileException;
+import java.util.HashSet;
 
 import static it.unicam.formula1Game.userInteraction.RequestConfigurationFile.requestConfigurationFile;
 
@@ -33,19 +36,24 @@ public class Formula1ApplicationCpu implements IFormula1Application {
         File raceTrackConfigurationFile = requestConfigurationFile();
         if(fileValidator.validate(raceTrackConfigurationFile)) {
             RaceTrack raceTrack = fileParser.parse(raceTrackConfigurationFile);
-            if (trackValidator.validateDirection(raceTrack.getDirection()) &&
-                    trackValidator.validateHeight(raceTrack.getHeight()) &&
-                    trackValidator.validateWidth(raceTrack.getWidth()) &&
-                    trackValidator.validateNumberOfPlayers(raceTrack.getNumberOfPlayers())) {
+            if (validate(raceTrack)) {
                 gameEngine.initializeEnvironment(raceTrack);
+                gameEngine.makeFirstMove();
                 gameEngine.startGame();
-                gameEngine.endGame();
+                //gameEngine.endGame();
             } else {
                 throw new InvalidConfigurationException("The prompted track is not valid");
             }
         }else {
             throw new InvalidFileFormatException("Configuration file format is not valid");
         }
+    }
+
+    private boolean validate(RaceTrack raceTrack) {
+        return trackValidator.validateDirection(raceTrack.getDirection()) &&
+                trackValidator.validateHeight(raceTrack.getHeight()) &&
+                trackValidator.validateWidth(raceTrack.getWidth()) &&
+                trackValidator.validateNumberOfPlayers(raceTrack.getNumberOfPlayers());
     }
 
     public static void main(String[] args) {

@@ -14,22 +14,17 @@ import java.util.function.BiPredicate;
  * It is responsible for processing and organizing landing region segments into prioritized lists
  * of coordinates, sorted by quadrants and removing duplicates.
  */
-public class LandingRegionsElaborator implements ILandingRegionsElaborator{
-    private final RaceTrack raceTrack;
-
-    public LandingRegionsElaborator(RaceTrack raceTrack) {
-        this.raceTrack = raceTrack;
-    }
-
+public class LandingRegionsElaborator implements ILandingRegionsElaborator {
     /**
      * Elaborates landing regions by extracting their coordinates, dividing them into quadrants,
      * sorting each quadrant, and reassembling the coordinates into a unified prioritized list.
      *
      * @param landingRegions A {@link List} of {@link Segment} objects representing landing regions.
+     * @param raceTrack
      * @return A {@link List} of {@link Coordinate} objects representing the processed and prioritized landing regions.
      */
     @Override
-    public List<Coordinate> elaborateLandingRegions(List<Segment> landingRegions) {
+    public List<Coordinate> elaborateLandingRegions(List<Segment> landingRegions, RaceTrack raceTrack) {
         // Extract coordinates
         List<Coordinate> allLandingRegionsCoordinates = extractCoordinates(landingRegions);
         // Filter each quadrant
@@ -50,9 +45,12 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator{
                 .thenComparing(Coordinate::getRow).reversed());
         sortCoordinates(q4, Comparator.comparing(Coordinate::getRow).reversed()
                 .thenComparing(Coordinate::getColumn).reversed());
-        // Reassemble the list, removing duplicates
-        return reassembleCoordinates(q1, q2, q3, q4);
+        // Reassemble the list, removing duplicates and adding the track's finish line coordinates
+        List<Coordinate> finalPath = reassembleCoordinates(q1, q2, q3, q4);
+        finalPath.addAll(raceTrack.getFinishCoordinates());
+        return finalPath;
     }
+
     /**
      * Reassembles coordinates from multiple lists and removes duplicates.
      *
@@ -60,12 +58,13 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator{
      * @return A unified list of coordinates without duplicates.
      */
     @SafeVarargs
-    private List<Coordinate> reassembleCoordinates(List<Coordinate>...quadrants) {
+    private List<Coordinate> reassembleCoordinates(List<Coordinate>... quadrants) {
         return Arrays.stream(quadrants)
                 .flatMap(List::stream) // Combine all quadrants into a single stream
                 .distinct()           // Remove duplicate coordinates
                 .toList();            // Collect to a list
     }
+
     /**
      * Extracts all coordinates from a list of landing region segments.
      *
@@ -79,11 +78,12 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator{
         }
         return allCoordinates;
     }
+
     /**
      * Filters coordinates based on the condition defined by a BiPredicate.
      *
      * @param allCoordinates The list of all coordinates to filter.
-     * @param condition The condition to apply for filtering, taking row and column values.
+     * @param condition      The condition to apply for filtering, taking row and column values.
      * @return A list of coordinates that match the condition.
      */
     private List<Coordinate> filterCoordinates(List<Coordinate> allCoordinates, BiPredicate<Integer, Integer> condition) {

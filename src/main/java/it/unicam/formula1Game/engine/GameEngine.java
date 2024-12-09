@@ -40,5 +40,9 @@ public interface GameEngine {
      */
     boolean checkWinCondition();
 
+    /**
+     * Makes the players do their first move.
+     */
+    void makeFirstMove();
 
 }
