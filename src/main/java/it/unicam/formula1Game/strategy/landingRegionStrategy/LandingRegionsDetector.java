@@ -37,7 +37,6 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
      * Finds segments of contiguous track cells in the grid, either horizontally or vertically.
      *
      * @param isRowBased a flag indicating whether to find horizontal segments (true) or vertical segments (false).
-     * @param raceTrack
      * @return a {@link Map} where the key is the row or column index, and the value is a {@link List} of {@link Segment} objects.
      */
     private Map<Integer, List<Segment>> calculateSegments(boolean isRowBased, RaceTrack raceTrack) {

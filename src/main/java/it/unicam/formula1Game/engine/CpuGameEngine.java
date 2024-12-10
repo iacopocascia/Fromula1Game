@@ -25,14 +25,20 @@ public class CpuGameEngine implements GameEngine {
      * The racetrack where the game takes place.
      */
     private RaceTrack raceTrack;
+    /**
+     * The winner of the race
+     */
+    private CpuPlayer winner;
 
     /**
+     * Initializes the game environment by placing players on the track and assigning strategies.
      *
+     * @param raceTrack the {@link RaceTrack} where the game takes place.
      */
     @Override
     public void initializeEnvironment(RaceTrack raceTrack) {
         try {
-            this.raceTrack=raceTrack;
+            this.raceTrack = raceTrack;
             this.players = new CpuPlayer[raceTrack.getNumberOfPlayers()];
             placeCpuPlayers();
             assignStrategies();
@@ -44,8 +50,9 @@ public class CpuGameEngine implements GameEngine {
     }
 
     /**
-     * Initializes and places each player on the start line.
-     * Each player is assigned a random ID between 1 and 10, and players are evenly placed across the start line.
+     * Places CPU players on the start line. Each player is assigned a unique random ID and a start position.
+     *
+     * @throws InvalidConfigurationException if players cannot be placed on the start line.
      */
     private void placeCpuPlayers() throws InvalidConfigurationException {
         int numberOfPlayers = this.raceTrack.getNumberOfPlayers();
@@ -67,6 +74,7 @@ public class CpuGameEngine implements GameEngine {
     /**
      * Generates a list of unique random IDs between 1 and 10 for the given number of players.
      *
+     * @param numberOfPlayers the number of players to assign IDs to.
      * @return a list of unique player IDs.
      */
     private List<Integer> generateUniquePlayerIds(int numberOfPlayers) {
@@ -79,64 +87,105 @@ public class CpuGameEngine implements GameEngine {
     }
 
     /**
-     * Assigns {@link GameStrategy} to each player in a Round-Robin fashion.
+     * Assigns {@link GameStrategy} instances to each player in a round-robin fashion.
      */
     private void assignStrategies() {
-        List<GameStrategy> gameStrategies=new ArrayList<>();
+        List<GameStrategy> gameStrategies = new ArrayList<>();
         gameStrategies.add(new RandomStrategy(this.raceTrack));
-        gameStrategies.add(new LandingRegionsStrategy(this.raceTrack,new LandingRegionsProcessor(this.raceTrack,new LandingRegionsDetector(),new LandingRegionsElaborator())));
-        for(int i=0;i<this.players.length;i++){
-            this.players[i].setStrategy(gameStrategies.get(i%gameStrategies.size()));
+        gameStrategies.add(new LandingRegionsStrategy(
+                this.raceTrack,
+                new LandingRegionsProcessor(
+                        new LandingRegionsDetector(),
+                        new LandingRegionsElaborator())
+        ));
+        for (int i = 0; i < this.players.length; i++) {
+            this.players[i].setStrategy(gameStrategies.get(i % gameStrategies.size()));
         }
     }
+
     /**
-     * Makes the players move to their left.
+     * Makes the players move left as their first move.
      */
     @Override
-    public void makeFirstMove(){
-        for (CpuPlayer player:this.players){
-            player.makeMove(new Coordinate(player.getPosition().getRow(),player.getPosition().getColumn()-1));
+    public void makeFirstMove() {
+        for (CpuPlayer player : this.players) {
+            player.makeMove(new Coordinate(player.getPosition().getRow(), player.getPosition().getColumn() - 1));
         }
     }
 
     /**
      * Starts the main game loop where players take turns until the game ends.
-     * Each player makes a move based on its strategy, and the game engine checks for crashes or win conditions.
+     * Each player makes a move based on its strategy, and the engine checks for end conditions.
      */
     @Override
     public void startGame() {
-        boolean gameInProgress=true;
-        while (gameInProgress){
-            for(CpuPlayer player:this.players){
-                player.applyStrategy();
+        boolean gameInProgress = true;
+        while (gameInProgress) {
+            if (!checkEndCondition()) {
+                for (CpuPlayer player : this.players) {
+                    if (!player.hasCrashed()) {
+                        player.applyStrategy();
+                    }
+                }
+            } else {
+                gameInProgress = false;
             }
-
+            // Print the current state of the game after each round
+            System.out.println(this.raceTrack);
         }
+        endGame();
 
     }
 
     /**
-     *
+     * Ends the game and announces the winner.
      */
     @Override
     public void endGame() {
-
+        System.out.println("******THE WINNER IS******\n");
+        System.out.println(this.winner);
     }
 
     /**
-     * @return
+     * Checks whether the game should end.
+     * The game ends if either a player wins or all players crash.
+     *
+     * @return <code>true</code> if the game should end, <code>false</code> otherwise.
      */
     @Override
-    public boolean checkCrash() {
-        return false;
+    public boolean checkEndCondition() {
+        return checkWinCondition() || checkAllPlayersCrashed();
     }
 
     /**
-     * @return
+     * Checks if a player has reached the finish line.
+     *
+     * @return <code>true</code> if a player crosses the finish line, <code>false</code> otherwise.
      */
-    @Override
-    public boolean checkWinCondition() {
-        return false;
+    private boolean checkWinCondition() {
+        boolean winConditionMet = false;
+        for (CpuPlayer player : this.players) {
+            if (this.raceTrack.getFinishCoordinates().contains(player.getPosition())) {
+                winConditionMet = true;
+                this.winner = player;
+                break;
+            }
+        }
+        return winConditionMet;
+    }
+
+    /**
+     * Checks if all players have crashed.
+     *
+     * @return <code>true</code> if all players crash, <code>false</code> otherwise.
+     */
+    private boolean checkAllPlayersCrashed() {
+        for (CpuPlayer player : this.players) {
+            if (!player.hasCrashed()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -14,7 +14,7 @@ import static it.unicam.formula1Game.cell.Coordinate.calculateDistance;
 
 /**
  * Implements a strategy for navigating a racetrack by focusing on landing regions.
- * Landing regions represent critical points of interest (e.g., corners) where
+ * Landing regions represent critical points of interest (e.g. corners) where
  * players must adjust their strategy for optimal performance.
  */
 public class LandingRegionsStrategy implements GameStrategy {
@@ -23,7 +23,7 @@ public class LandingRegionsStrategy implements GameStrategy {
     private final List<Coordinate> path;
     /**
      * Constructs a {@code LandingRegionsStrategy} with the provided dependencies.
-     * <p>
+     *
      *  @param raceTrack                     the {@link RaceTrack} on which the strategy will be applied.
      *  @param landingRegionsProcessor       the {@link LandingRegionsProcessor} object used to build the path.
      */
@@ -122,5 +122,10 @@ public class LandingRegionsStrategy implements GameStrategy {
             }
         }
         return availableMoves;
+    }
+
+    @Override
+    public String toString() {
+        return "LandingRegionsStrategy";
     }
 }

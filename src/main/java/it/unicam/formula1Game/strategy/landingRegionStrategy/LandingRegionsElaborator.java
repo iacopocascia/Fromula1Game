@@ -20,7 +20,6 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator {
      * sorting each quadrant, and reassembling the coordinates into a unified prioritized list.
      *
      * @param landingRegions A {@link List} of {@link Segment} objects representing landing regions.
-     * @param raceTrack
      * @return A {@link List} of {@link Coordinate} objects representing the processed and prioritized landing regions.
      */
     @Override

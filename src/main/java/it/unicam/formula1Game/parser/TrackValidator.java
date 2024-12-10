@@ -19,7 +19,7 @@ public class TrackValidator implements ITrackValidator {
      */
     @Override
     public boolean validateWidth(int width) {
-        return width>0 && width<MAX_WIDTH;
+        return width > 0 && width < MAX_WIDTH;
     }
 
     /**
@@ -31,7 +31,7 @@ public class TrackValidator implements ITrackValidator {
      */
     @Override
     public boolean validateHeight(int height) {
-        return height>0 && height<MAX_HEIGHT;
+        return height > 0 && height < MAX_HEIGHT;
     }
 
     /**
@@ -44,7 +44,7 @@ public class TrackValidator implements ITrackValidator {
      */
     @Override
     public boolean validateNumberOfPlayers(int numberOfPlayers) {
-        return numberOfPlayers>=MIN_PLAYERS && numberOfPlayers<=MAX_PLAYERS;
+        return numberOfPlayers >= MIN_PLAYERS && numberOfPlayers <= MAX_PLAYERS;
     }
 
     /**
@@ -56,6 +56,6 @@ public class TrackValidator implements ITrackValidator {
      */
     @Override
     public boolean validateDirection(String direction) {
-        return direction.equals("cw")||direction.equals("ccw");
+        return direction.equals("cw") || direction.equals("ccw");
     }
 }

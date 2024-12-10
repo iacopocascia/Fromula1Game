@@ -4,11 +4,8 @@ import it.unicam.formula1Game.cell.Cell;
 import it.unicam.formula1Game.cell.CellType;
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
-import it.unicam.formula1Game.player.CpuPlayer;
-import it.unicam.formula1Game.player.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class RaceTrack {
@@ -46,7 +43,6 @@ public class RaceTrack {
         this.height = height;
         this.grid = grid;
         this.numberOfPlayers = numberOfPlayers;
-        //this.players = new Player[numberOfPlayers];
         this.direction = direction;
         this.visualGridRepresentation = buildTrackRepresentation();
     }

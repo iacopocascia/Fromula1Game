@@ -13,7 +13,7 @@ public interface ILandingRegionsElaborator {
      * Processes and organizes the detected landing regions for strategic use.
      *
      * @param landingRegions A {@link List} of {@link Segment} objects representing the detected landing regions.
-     * @param raceTrack
+     * @param raceTrack the {@link RaceTrack} object where the elaboration applies.
      * @return A {@link List} of {@link Coordinate} objects representing the processed landing regions.
      */
     List<Coordinate> elaborateLandingRegions(List<Segment> landingRegions, RaceTrack raceTrack);

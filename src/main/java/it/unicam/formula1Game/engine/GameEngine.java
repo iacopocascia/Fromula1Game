@@ -10,7 +10,7 @@ import it.unicam.formula1Game.racetrack.RaceTrack;
 public interface GameEngine {
     /**
      * Initializes the game environment.
-     * This method sets up the game environment, including loading players and setting initial conditions.
+     * This method sets up the game environment, setting initial conditions.
      */
     void initializeEnvironment(RaceTrack raceTrack);
 
@@ -26,19 +26,11 @@ public interface GameEngine {
     void endGame();
 
     /**
-     * Checks if the player has crashed by exceeding track boundaries or hitting a wall.
-     * If a crash is detected, the player's status is updated accordingly.
-     *
-     * @return {@code true} if the player has crashed, {@code false} otherwise.
-     */
-    boolean checkCrash();
-
-    /**
-     * Checks if a player has won the race by crossing the finish line.
+     * Checks if the end condition for the game is met.
      * This method should be called after each move to determine whether the game should end.
-     * @return {@code true} if there is a win condition, {@code false} otherwise.
+     * @return {@code true} if there is an end condition, {@code false} otherwise.
      */
-    boolean checkWinCondition();
+    boolean checkEndCondition();
 
     /**
      * Makes the players do their first move.

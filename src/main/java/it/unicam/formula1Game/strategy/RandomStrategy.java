@@ -41,6 +41,7 @@ public class RandomStrategy implements GameStrategy {
             Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
             player.makeMove(selectedMove);
         }else {
+            // If there are no available moves left (within the track borders) it means the player is going to crash
             player.setHasCrashed(true);
         }
     }
@@ -115,4 +116,8 @@ public class RandomStrategy implements GameStrategy {
         }
     }
 
+    @Override
+    public String toString() {
+        return "RandomStrategy";
+    }
 }

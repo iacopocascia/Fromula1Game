@@ -11,8 +11,6 @@ import it.unicam.formula1Game.racetrack.RaceTrack;
 import java.io.File;
 import java.io.IOException;
 
-import static it.unicam.formula1Game.racetrack.Constants.*;
-
 /**
  * The {@code JsonParser} class implements the {@link ConfigurationFileParser} interface
  * to provide functionality for parsing JSON configuration files and creating {@link RaceTrack} objects.
@@ -27,20 +25,15 @@ public class JsonParser implements ConfigurationFileParser {
      */
     @Override
     public RaceTrack parse(File configurationFile) throws InvalidConfigurationException {
-        // Ensure the file is a valid JSON
-        //validateJsonFile(configurationFile);
         JsonNode jsonNode = readJson(configurationFile);
         // Parse track's data
         int width = jsonNode.get("width").asInt();
         int height = jsonNode.get("height").asInt();
         int numPlayers = jsonNode.get("numPlayers").asInt();
         String direction = jsonNode.get("direction").asText();
-        // Validate the parsed values
-        //validateConfiguration(width, numPlayers, height);
         // Parse the track grid
         Cell[][] grid = parseGrid(jsonNode, width, height);
-
-        return new RaceTrack(width, height, grid, numPlayers,direction);
+        return new RaceTrack(width, height, grid, numPlayers, direction);
     }
 
     /**
@@ -75,12 +68,10 @@ public class JsonParser implements ConfigurationFileParser {
         if (trackArray == null || !trackArray.isArray()) {
             throw new InvalidConfigurationException("Track layout is missing or not properly formatted.");
         }
-
         // Ensure the number of rows matches the specified height
         if (trackArray.size() != height) {
             throw new InvalidConfigurationException("Track height does not match the specified height.");
         }
-
         // Create the grid
         return createGrid(trackArray, width, height);
     }
@@ -124,34 +115,6 @@ public class JsonParser implements ConfigurationFileParser {
             throw new InvalidConfigurationException("Invalid cell character '" + cellChar + "' at (" + row + ", " + column + ")");
         }
         return new Cell(cellType, new Coordinate(row, column));
-    }
-
-    /**
-     * Validates the width, height and number of players to ensure they are within the allowed range.
-     *
-     * @param width      the track's total width
-     * @param height     trac track's total height
-     * @param numPlayers the number of players
-     * @throws InvalidConfigurationException if the number of players is out of the allowed range
-     */
-    private void validateConfiguration(int width, int height, int numPlayers) throws InvalidConfigurationException {
-        if (width < 0 || width > MAX_WIDTH
-                || height < 0 || height > MAX_HEIGHT
-                || numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
-            throw new InvalidConfigurationException("Invalid number of players.");
-        }
-    }
-
-    /**
-     * Validates if the given file is an actual JSON file.
-     *
-     * @param configurationFile the configuration file to be validated
-     * @throws InvalidConfigurationException if the file is not a valid JSON file
-     */
-    private void validateJsonFile(File configurationFile) throws InvalidConfigurationException {
-        if (!configurationFile.getName().endsWith(".json")) {
-            throw new InvalidConfigurationException("Not a JSON file.");
-        }
     }
 
 
