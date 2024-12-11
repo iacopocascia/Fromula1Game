@@ -8,6 +8,10 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a racetrack in the game, including its grid, size, number of players, and race direction.
+ * Provides methods to access and manipulate the track's structure, including the start and finish lines.
+ */
 public class RaceTrack {
     /**
      * The track's total width
@@ -18,7 +22,7 @@ public class RaceTrack {
      */
     private final int height;
     /**
-     * Represents the track as a 2D grid of {@link Cell}
+     * Represents the track as a 2D grid of {@link Cell} objects.
      */
     private final Cell[][] grid;
     /**
@@ -26,7 +30,7 @@ public class RaceTrack {
      */
     private final int numberOfPlayers;
     /**
-     * The direction of the race: clockwise or counter-clockwise
+     * The direction of the race, either clockwise ("cw") or counter-clockwise ("ccw").
      */
     private final String direction;
     /**
@@ -35,9 +39,15 @@ public class RaceTrack {
     private final String[][] visualGridRepresentation;
 
     /**
-     * Creates a new racetrack
+     * Creates a new racetrack with the specified dimensions, grid, number of players, and race direction.
+     *
+     * @param width           The width of the racetrack.
+     * @param height          The height of the racetrack.
+     * @param grid            The 2D grid of cells representing the track.
+     * @param numberOfPlayers The number of players participating in the race.
+     * @param direction       The direction of the race ("cw" for clockwise or "ccw" for counter-clockwise).
+     * @throws InvalidConfigurationException if the track's configuration is invalid.
      */
-
     public RaceTrack(int width, int height, Cell[][] grid, int numberOfPlayers, String direction) throws InvalidConfigurationException {
         this.width = width;
         this.height = height;
@@ -64,9 +74,10 @@ public class RaceTrack {
     }
 
     /**
-     * Gets all the <code>START</code> cells positions in the track.
+     * Gets all the <code>START</code> cell positions in the track.
      *
-     * @return A {@link List} of {@link Coordinate} of the starting cells.
+     * @return A {@link List} of {@link Coordinate} objects representing the start cells.
+     * @throws InvalidConfigurationException If no start cells are found on the track.
      */
     public List<Coordinate> getStartCoordinates() throws InvalidConfigurationException {
         List<Coordinate> startCoordinates = new ArrayList<>();
@@ -84,9 +95,9 @@ public class RaceTrack {
     }
 
     /**
-     * Gets all the <code>FINISH</code> cells positions in the track.
+     * Gets all the <code>FINISH</code> cell positions in the track.
      *
-     * @return A {@link List} of {@link Coordinate} of the finish cells.
+     * @return A {@link List} of {@link Coordinate} objects representing the finish cells.
      */
     public List<Coordinate> getFinishCoordinates() {
         List<Coordinate> finishCoordinates = new ArrayList<>();
@@ -111,43 +122,65 @@ public class RaceTrack {
                 && position.getColumn() <= this.width && position.getColumn() >= 0;
     }
 
+    /**
+     * Gets the width of the track.
+     *
+     * @return The width of the track.
+     */
     public int getWidth() {
         return this.width;
     }
 
+    /**
+     * Gets the height of the track.
+     *
+     * @return The height of the track.
+     */
     public int getHeight() {
         return this.height;
     }
 
+    /**
+     * Gets the 2D grid representation of the track.
+     *
+     * @return The 2D array of {@link Cell} objects representing the grid.
+     */
     public Cell[][] getGrid() {
         return this.grid;
     }
 
+    /**
+     * Gets the direction of the race (either "cw" for clockwise or "ccw" for counter-clockwise).
+     *
+     * @return The race direction.
+     */
     public String getDirection() {
         return this.direction;
     }
 
+    /**
+     * Gets the number of players taking part in the race.
+     *
+     * @return The number of players.
+     */
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
     }
 
-    public String[][] getVisualGridRepresentation() {
-        return visualGridRepresentation;
-    }
-
     /**
-     * Calls the static method <code>visualizeRaceTrack()</code> of the {@link RaceTrackVisualizer} class.
-     */
-    @Override
-    public String toString() {
-        return RaceTrackVisualizer.visualizeRacetrack(this);
-    }
-
-    /**
-     * Builds a 2D array of strings representing the static part of the track grid
-     * without players.
+     * Returns the visual 2D grid representation of the track (without players).
      *
-     * @return a 2D array of strings representing the grid
+     * @return The 2D array of strings representing the visual grid of the racetrack.
+     */
+    public String[][] getVisualGridRepresentation() {
+        return this.visualGridRepresentation;
+    }
+
+    /**
+     * Builds the visual 2D representation of the track, excluding players.
+     * This representation is a static view of the track.
+     *
+     * @return A 2D array of strings representing the static grid of the track.
      */
     private String[][] buildTrackRepresentation() {
         String[][] trackRepresentation = new String[height][width];
