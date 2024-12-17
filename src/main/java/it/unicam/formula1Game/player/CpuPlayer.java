@@ -161,6 +161,14 @@ public class CpuPlayer implements Player {
         this.strategy.applyStrategy(this);
     }
 
+    public Coordinate getLastMove() {
+        return lastMove;
+    }
+
+    public double getVelocity() {
+        return velocity;
+    }
+
     /**
      * Returns a string representation of the player.
      * The format includes the player's ID, position, velocity, and current strategy.
@@ -174,4 +182,5 @@ public class CpuPlayer implements Player {
                 "\n with final velocity: " + velocity +
                 "\n using strategy: " + strategy;
     }
+
 }

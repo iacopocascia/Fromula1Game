@@ -1,4 +1,4 @@
-package it.unicam.formula1Game.parser;
+package it.unicam.formula1Game.validator;
 
 /**
  * The {@code ITrackValidator} interface defines the contract for validating various properties

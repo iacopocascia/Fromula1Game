@@ -6,6 +6,10 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.exceptions.InvalidFileFormatException;
 import it.unicam.formula1Game.parser.*;
 import it.unicam.formula1Game.racetrack.RaceTrack;
+import it.unicam.formula1Game.validator.ConfigurationFileValidator;
+import it.unicam.formula1Game.validator.ITrackValidator;
+import it.unicam.formula1Game.validator.JsonValidator;
+import it.unicam.formula1Game.validator.RaceTrackValidator;
 
 import java.io.File;
 import java.nio.file.NoSuchFileException;
@@ -106,7 +110,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
         Formula1ApplicationCpu application = new Formula1ApplicationCpu(
                 new JsonParser(),
                 new JsonValidator(),
-                new TrackValidator(),
+                new RaceTrackValidator(),
                 new CpuGameEngine()
         );
         try {

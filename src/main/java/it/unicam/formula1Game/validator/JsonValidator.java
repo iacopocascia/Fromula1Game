@@ -1,4 +1,4 @@
-package it.unicam.formula1Game.parser;
+package it.unicam.formula1Game.validator;
 
 import java.io.File;
 

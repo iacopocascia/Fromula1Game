@@ -1,4 +1,4 @@
-package it.unicam.formula1Game.parser;
+package it.unicam.formula1Game.validator;
 
 import it.unicam.formula1Game.racetrack.Constants;
 
@@ -8,7 +8,7 @@ import static it.unicam.formula1Game.racetrack.Constants.*;
  * The {@code TrackValidator} class implements the {@link ITrackValidator} interface
  * to provide concrete methods for validating the properties of a racetrack.
  */
-public class TrackValidator implements ITrackValidator {
+public class RaceTrackValidator implements ITrackValidator {
 
     /**
      * Validates the width of the racetrack.

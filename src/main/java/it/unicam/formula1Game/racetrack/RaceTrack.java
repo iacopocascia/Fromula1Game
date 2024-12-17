@@ -118,8 +118,8 @@ public class RaceTrack {
      * @return <code>true</code> if it is within the boundaries, <code>false</code> otherwise.
      */
     public boolean isWithinBoundaries(Coordinate position) {
-        return position.getRow() <= this.height && position.getRow() >= 0
-                && position.getColumn() <= this.width && position.getColumn() >= 0;
+        return position.getRow() < this.height && position.getRow() >= 0
+                && position.getColumn() < this.width && position.getColumn() >= 0;
     }
 
     /**
