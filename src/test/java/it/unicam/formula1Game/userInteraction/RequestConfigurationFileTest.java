@@ -7,8 +7,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RequestConfigurationFileTest {
     @Test
@@ -17,6 +16,13 @@ public class RequestConfigurationFileTest {
         InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(in);
         assertThrows(NoSuchFileException.class, RequestConfigurationFile::requestConfigurationFile);
+    }
+    @Test
+    public void request_existing_configuration_file_test() throws NoSuchFileException {
+        String simulatedInput = "src/jsonRaceTracks/track.json";
+        InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(in);
+        assertEquals(RequestConfigurationFile.requestConfigurationFile().getClass(),File.class);
     }
 }
 

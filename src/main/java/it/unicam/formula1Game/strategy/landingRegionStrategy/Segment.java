@@ -18,4 +18,13 @@ public class Segment {
     public List<Coordinate> getPoints() {
         return points;
     }
+
+    @Override
+    public String toString() {
+        String segment= "";
+       for(Coordinate coordinate:points){
+           segment=segment.concat(coordinate.toString());
+       }
+       return segment;
+    }
 }

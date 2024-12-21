@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 /**
  * The {@code LandingRegionsElaborator} class implements the {@link ILandingRegionsElaborator} interface.
@@ -16,8 +17,8 @@ import java.util.function.BiPredicate;
  */
 public class LandingRegionsElaborator implements ILandingRegionsElaborator {
     /**
-     * Elaborates landing regions by extracting their coordinates, dividing them into quadrants,
-     * sorting each quadrant, and reassembling the coordinates into a unified prioritized list.
+     * Elaborates landing regions by extracting their coordinates, dividing them into sections,
+     * sorting each section, and reassembling the coordinates into a unified prioritized list.
      *
      * @param landingRegions A {@link List} of {@link Segment} objects representing landing regions.
      * @return A {@link List} of {@link Coordinate} objects representing the processed and prioritized landing regions.
@@ -27,25 +28,25 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator {
         // Extract coordinates
         List<Coordinate> allLandingRegionsCoordinates = extractCoordinates(landingRegions);
         // Filter each quadrant
-        List<Coordinate> q1 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row <= raceTrack.getHeight() / 2 && col <= raceTrack.getWidth() / 2);
-        List<Coordinate> q2 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row > raceTrack.getHeight() / 2 && col <= raceTrack.getWidth() / 2);
-        List<Coordinate> q3 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row > raceTrack.getHeight() / 2 && col > raceTrack.getWidth() / 2);
+        List<Coordinate> s1 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
+                row <= 6 && col <= 21);
+        List<Coordinate> s2 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
+                row > 6 && col <= 12);
+        List<Coordinate> s3 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
+                row > 5 / 2 && col > 12 && col<=26);
         List<Coordinate> q4 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
                 row <= raceTrack.getHeight() / 2 && col > raceTrack.getWidth() / 2);
         // Sort each quadrant
-        sortCoordinates(q1, Comparator.comparing(Coordinate::getColumn).reversed()
-                .thenComparing(Coordinate::getRow));
-        sortCoordinates(q2, Comparator.comparing(Coordinate::getRow)
+        sortCoordinates(s1, Comparator.comparing(Coordinate::getRow)
+                .thenComparing(Coordinate::getColumn).reversed());
+        sortCoordinates(s2, Comparator.comparing(Coordinate::getRow)
                 .thenComparing(Coordinate::getColumn));
-        sortCoordinates(q3, Comparator.comparing(Coordinate::getColumn)
+        sortCoordinates(s3, Comparator.comparing(Coordinate::getColumn)
                 .thenComparing(Coordinate::getRow).reversed());
         sortCoordinates(q4, Comparator.comparing(Coordinate::getRow).reversed()
                 .thenComparing(Coordinate::getColumn).reversed());
-        // Reassemble the list, removing duplicates and adding the track's finish line coordinates
-        List<Coordinate> finalPath = reassembleCoordinates(q1, q2, q3, q4);
+        // Reassemble the coordinates
+        List<Coordinate> finalPath = reassembleCoordinates(s1, s2, s3, q4);
         finalPath.addAll(raceTrack.getFinishCoordinates());
         return finalPath;
     }
@@ -61,7 +62,7 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator {
         return Arrays.stream(quadrants)
                 .flatMap(List::stream) // Combine all quadrants into a single stream
                 .distinct()           // Remove duplicate coordinates
-                .toList();            // Collect to a list
+                .collect(Collectors.toCollection(ArrayList::new)); // Collect into a mutable list
     }
 
     /**

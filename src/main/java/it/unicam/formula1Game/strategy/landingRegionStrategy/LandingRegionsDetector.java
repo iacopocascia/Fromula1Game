@@ -51,7 +51,7 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
             for (int inner = 0; inner < innerLimit; inner++) {
                 Cell cell = isRowBased ? raceTrack.getGrid()[outer][inner] : raceTrack.getGrid()[inner][outer];
 
-                if (cell.cellType() == CellType.TRACK) {
+                if (cell.cellType() != CellType.WALL) {
                     if (currentSegment == null) {
                         currentSegment = new Segment();
                     }
@@ -85,7 +85,7 @@ public class LandingRegionsDetector implements ILandingRegionsDetector {
      */
     public List<Segment> applyDetectionLogic(Map<Integer, List<Segment>> segmentsMap) {
         List<Segment> landingRegions = new ArrayList<>();
-        for (int i = 1; i < segmentsMap.size(); i++) {
+        for (int i = 2; i < segmentsMap.size(); i++) {
             int currentCount = segmentsMap.get(i).size();
             int previousCount = segmentsMap.get(i - 1).size();
             if (currentCount != 0 && previousCount != 0) {
