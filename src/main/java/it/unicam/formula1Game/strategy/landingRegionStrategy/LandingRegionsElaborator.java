@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * The {@code LandingRegionsElaborator} class implements the {@link ILandingRegionsElaborator} interface.
  * It is responsible for processing and organizing landing region segments into prioritized lists
- * of coordinates, sorted by quadrants and removing duplicates.
+ * of coordinates, sorted by sections and removing duplicates.
  */
 public class LandingRegionsElaborator implements ILandingRegionsElaborator {
     /**
@@ -27,26 +27,34 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator {
     public List<Coordinate> elaborateLandingRegions(List<Segment> landingRegions, RaceTrack raceTrack) {
         // Extract coordinates
         List<Coordinate> allLandingRegionsCoordinates = extractCoordinates(landingRegions);
-        // Filter each quadrant
+        // Filter each section
         List<Coordinate> s1 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row <= 6 && col <= 21);
+                row <= 4 && col <= 20);
         List<Coordinate> s2 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row > 6 && col <= 12);
+                row > 4 && col <= 9);
         List<Coordinate> s3 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row > 5 / 2 && col > 12 && col<=26);
-        List<Coordinate> q4 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
-                row <= raceTrack.getHeight() / 2 && col > raceTrack.getWidth() / 2);
-        // Sort each quadrant
-        sortCoordinates(s1, Comparator.comparing(Coordinate::getRow)
-                .thenComparing(Coordinate::getColumn).reversed());
+                row > 5 && col > 12 && col <= 26);
+        List<Coordinate> s4 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
+                row > 5 && col > 26 && col <= 42);
+        List<Coordinate> s5 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
+                row >= 4 && row <= 11 && col >= 41);
+        List<Coordinate> s6 = filterCoordinates(allLandingRegionsCoordinates, (row, col) ->
+                row <= 3 && col >= 23);
+        // Sort each section
+        sortCoordinates(s1, Comparator.comparing(Coordinate::getColumn).reversed()
+                .thenComparing(Coordinate::getRow));
         sortCoordinates(s2, Comparator.comparing(Coordinate::getRow)
+                .thenComparing(Comparator.comparing(Coordinate::getColumn).reversed()));
+        sortCoordinates(s3, Comparator.comparing(Coordinate::getRow).reversed()
                 .thenComparing(Coordinate::getColumn));
-        sortCoordinates(s3, Comparator.comparing(Coordinate::getColumn)
-                .thenComparing(Coordinate::getRow).reversed());
-        sortCoordinates(q4, Comparator.comparing(Coordinate::getRow).reversed()
-                .thenComparing(Coordinate::getColumn).reversed());
+        sortCoordinates(s4, Comparator.comparing(Coordinate::getRow)
+                .thenComparing(Coordinate::getColumn));
+        sortCoordinates(s5, Comparator.comparing(Coordinate::getRow).reversed()
+                .thenComparing(Coordinate::getColumn));
+        sortCoordinates(s6, Comparator.comparing(Coordinate::getColumn).reversed()
+                .thenComparing(Comparator.comparing(Coordinate::getRow).reversed()));
         // Reassemble the coordinates
-        List<Coordinate> finalPath = reassembleCoordinates(s1, s2, s3, q4);
+        List<Coordinate> finalPath = reassembleCoordinates(s1, s2, s3, s4, s5, s6);
         finalPath.addAll(raceTrack.getFinishCoordinates());
         return finalPath;
     }
@@ -54,13 +62,13 @@ public class LandingRegionsElaborator implements ILandingRegionsElaborator {
     /**
      * Reassembles coordinates from multiple lists and removes duplicates.
      *
-     * @param quadrants The lists of coordinates from the quadrants.
+     * @param quadrants The lists of coordinates from the sections.
      * @return A unified list of coordinates without duplicates.
      */
     @SafeVarargs
     private List<Coordinate> reassembleCoordinates(List<Coordinate>... quadrants) {
         return Arrays.stream(quadrants)
-                .flatMap(List::stream) // Combine all quadrants into a single stream
+                .flatMap(List::stream) // Combine all sections into a single stream
                 .distinct()           // Remove duplicate coordinates
                 .collect(Collectors.toCollection(ArrayList::new)); // Collect into a mutable list
     }
