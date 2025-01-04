@@ -3,6 +3,7 @@ package it.unicam.formula1Game.engine;
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.player.CpuPlayer;
+import it.unicam.formula1Game.player.Player;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 import it.unicam.formula1Game.strategy.GameStrategy;
 import it.unicam.formula1Game.strategy.RandomStrategy;
@@ -43,7 +44,7 @@ public class CpuGameEngine implements GameEngine {
             placeCpuPlayers();
             assignStrategies();
             System.out.println("Game Initialized");
-            System.out.println(this.raceTrack);
+            System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
         } catch (InvalidConfigurationException e) {
             System.out.println("An error occurred during players placement");
         }
@@ -72,15 +73,15 @@ public class CpuGameEngine implements GameEngine {
     }
 
     /**
-     * Generates a list of unique random IDs between 1 and 10 for the given number of players.
+     * Generates a list of unique random IDs between 0 and 9 for the given number of players.
      *
      * @param numberOfPlayers the number of players to assign IDs to.
      * @return a list of unique player IDs.
      */
     private List<Integer> generateUniquePlayerIds(int numberOfPlayers) {
         List<Integer> availableIds = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            availableIds.add(i);  // Add IDs from 1 to 10
+        for (int i = 0; i < 10; i++) {
+            availableIds.add(i);  // Add IDs from 0 to 9
         }
         Collections.shuffle(availableIds);  // Shuffle the list to randomize IDs
         return availableIds.subList(0, numberOfPlayers);  // Return only the number of IDs needed for the players
@@ -120,6 +121,7 @@ public class CpuGameEngine implements GameEngine {
     @Override
     public void startGame() {
         boolean gameInProgress = true;
+        int round = 1;
         while (gameInProgress) {
             if (!checkEndCondition()) {
                 for (CpuPlayer player : this.players) {
@@ -131,19 +133,28 @@ public class CpuGameEngine implements GameEngine {
                 gameInProgress = false;
             }
             // Print the current state of the game after each round
-            System.out.println(this.raceTrack);
+            System.out.println("******************** ROUND " + round + " ********************");
+            System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
+            round++;
         }
-        endGame();
+        if (this.winner == null) {
+            System.out.println("NO WINNER, ALL PLAYERS CRASHED");
+        } else {
+            endGame();
+        }
 
     }
 
     /**
      * Ends the game and announces the winner.
+     *
+     * @return the {@link CpuPlayer} who won the game.
      */
     @Override
-    public void endGame() {
+    public Player endGame() {
         System.out.println("******THE WINNER IS******\n");
         System.out.println(this.winner);
+        return this.winner;
     }
 
     /**
@@ -188,4 +199,15 @@ public class CpuGameEngine implements GameEngine {
         return true;
     }
 
+    public RaceTrack getRaceTrack() {
+        return raceTrack;
+    }
+
+    public CpuPlayer[] getPlayers() {
+        return players;
+    }
+
+    public CpuPlayer getWinner() {
+        return winner;
+    }
 }

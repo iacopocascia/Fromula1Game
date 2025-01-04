@@ -1,8 +1,9 @@
-package it.unicam.formula1Game.racetrack;
+package it.unicam.formula1Game.engine;
 
 import it.unicam.formula1Game.cell.CellType;
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.player.Player;
+import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class GameVisualizer {
      * @param players   the list of {@link Player} objects to include in the visualization.
      * @return a <code>String</code> representation of the game's state.
      */
-    public static String visualizeRacetrack(RaceTrack raceTrack, List<? extends Player> players) {
+    public static String visualizeGame(RaceTrack raceTrack, List<? extends Player> players) {
         StringBuilder sb = new StringBuilder();
         // Place the players on the grid (if they haven't crashed)
         placePlayersOnTrack(raceTrack, players);

@@ -1,5 +1,6 @@
 package it.unicam.formula1Game.engine;
 
+import it.unicam.formula1Game.player.Player;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
 /**
@@ -22,8 +23,10 @@ public interface GameEngine {
     /**
      * Ends the game and handles any post-game logic, such as declaring the winner.
      * This method is called when the game has been won or all players have crashed.
+     *
+     * @return the {@link Player} who won the game.
      */
-    void endGame();
+    Player endGame();
 
     /**
      * Checks if the end condition for the game is met.
