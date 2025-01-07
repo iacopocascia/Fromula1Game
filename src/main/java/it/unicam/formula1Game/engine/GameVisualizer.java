@@ -84,12 +84,14 @@ public class GameVisualizer {
 
     /**
      * Places the players on the track's visual grid representation, replacing the cell with the player's ID
-     * if they haven't crashed.
+     * if they haven't crashed. Resets the grid to its initial state before updating.
      *
      * @param raceTrack the {@link RaceTrack} to update.
      * @param players   the list of {@link Player} objects to place on the grid.
      */
     private static void placePlayersOnTrack(RaceTrack raceTrack, List<? extends Player> players) {
+        // Reset the visual grid to its initial state
+        resetTrackVisualRepresentation(raceTrack);
         for (Player player : players) {
             if (!player.hasCrashed()) {
                 int row = player.getPosition().getRow();
@@ -97,6 +99,17 @@ public class GameVisualizer {
                 raceTrack.getVisualGridRepresentation()[row][column] = String.valueOf(player.getId());  // Place player ID on track
             }
         }
+    }
 
+    /**
+     * Resets the track's visual representation to its initial state (without player positions).
+     *
+     * @param raceTrack the {@link RaceTrack} whose visual grid is being reset.
+     */
+    private static void resetTrackVisualRepresentation(RaceTrack raceTrack) {
+        String[][] initialRepresentation = raceTrack.buildTrackRepresentation();
+        for (int row = 0; row < raceTrack.getHeight(); row++) {
+            System.arraycopy(initialRepresentation[row], 0, raceTrack.getVisualGridRepresentation()[row], 0, raceTrack.getWidth());
+        }
     }
 }

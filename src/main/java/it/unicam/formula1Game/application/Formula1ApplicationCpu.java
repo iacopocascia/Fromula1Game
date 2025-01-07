@@ -54,9 +54,18 @@ public class Formula1ApplicationCpu implements IFormula1Application {
         this.trackValidator = trackValidator;
         this.gameEngine = gameEngine;
     }
-
     /**
-     * Runs the Formula 1 game application by performing the following steps:
+     * Runs the Formula 1 game application by requesting a configuration file.
+     * For testing purposes the <code>run</code> methods have been split.
+     * @throws Exception if any step in the process fails.
+     */
+    @Override
+    public void run() throws Exception {
+        File raceTrackConfigurationFile = requestConfigurationFile();
+        run(raceTrackConfigurationFile); // Call the overloaded method
+    }
+    /**
+     * Runs the Formula 1 game application with the specified configuration file by performing the following steps:
      * <ul>
      *     <li>Requests a configuration file from the user.</li>
      *     <li>Validates the file format.</li>
@@ -65,12 +74,10 @@ public class Formula1ApplicationCpu implements IFormula1Application {
      *     <li>Initializes and starts the game using the {@link GameEngine}.</li>
      * </ul>
      *
+     * @param raceTrackConfigurationFile The configuration file for the racetrack.
      * @throws Exception if any step in the process fails.
      */
-    @Override
-    public void run() throws Exception {
-        // Request a configuration file
-        File raceTrackConfigurationFile = requestConfigurationFile();
+    public void run(File raceTrackConfigurationFile) throws Exception {
         // Validate the configuration file format
         if (fileValidator.validate(raceTrackConfigurationFile)) {
             // Parse the configuration file

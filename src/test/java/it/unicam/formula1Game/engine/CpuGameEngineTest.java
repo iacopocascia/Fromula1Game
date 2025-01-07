@@ -72,6 +72,13 @@ public class CpuGameEngineTest {
         this.gameEngine.checkEndCondition();
         assertEquals(this.gameEngine.endGame(), this.gameEngine.getWinner());
     }
+    @Test
+    public void start_game_test(){
+        this.gameEngine.initializeEnvironment(this.raceTrack);
+        this.gameEngine.startGame();
+
+    }
+
 
 
 }

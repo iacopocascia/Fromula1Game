@@ -1,7 +1,7 @@
 package it.unicam.formula1Game.strategy;
 
+import it.unicam.formula1Game.cell.CellType;
 import it.unicam.formula1Game.cell.Coordinate;
-import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
@@ -21,7 +21,7 @@ public class RandomStrategy implements GameStrategy {
     /**
      * Constructs a new {@code RandomStrategy} with the specified racetrack.
      *
-     * @param raceTrack  the {@link RaceTrack} where the game is being played.
+     * @param raceTrack the {@link RaceTrack} where the game is being played.
      */
     public RandomStrategy(RaceTrack raceTrack) {
         this.raceTrack = raceTrack;
@@ -34,13 +34,14 @@ public class RandomStrategy implements GameStrategy {
      */
     @Override
     public void applyStrategy(CpuPlayer player) {
-        Set<Coordinate> availableMoves=getAvailableMoves(player);
-        if(!availableMoves.isEmpty()) {
+        Set<Coordinate> availableMoves = getAvailableMoves(player);
+        if (!availableMoves.isEmpty()) {
             List<Coordinate> weightedMoves = evaluateMoves(availableMoves);
             // Select a random move from the weighted moves list
             Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
             player.makeMove(selectedMove);
-        }else {
+            checkHasCrashed(player);
+        } else {
             // If there are no available moves left (within the track borders) it means the player is going to crash
             player.setHasCrashed(true);
         }
@@ -68,6 +69,19 @@ public class RandomStrategy implements GameStrategy {
             }
         }
         return availableMoves;
+    }
+
+    /**
+     * Checks if the specified player has crashed based on their current position and game context.
+     * If so sets the <code>hasCrashed</code> field of the <code>CpuPlayer</code> class to <code>true</code>.
+     *
+     * @param player The {@link CpuPlayer} to check.
+     */
+    @Override
+    public void checkHasCrashed(CpuPlayer player) {
+        if (this.raceTrack.getCellAt(player.getPosition()).cellType() == CellType.WALL) {
+            player.setHasCrashed(true);
+        }
     }
 
     /**

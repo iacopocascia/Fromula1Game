@@ -1,5 +1,6 @@
 package it.unicam.formula1Game.strategy.landingRegionStrategy;
 
+import it.unicam.formula1Game.cell.CellType;
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.player.CpuPlayer;
@@ -21,11 +22,12 @@ public class LandingRegionsStrategy implements GameStrategy {
     private final RaceTrack raceTrack;
     private final LandingRegionsProcessor landingRegionsProcessor;
     private final List<Coordinate> path;
+
     /**
      * Constructs a {@code LandingRegionsStrategy} with the provided dependencies.
      *
-     *  @param raceTrack                     the {@link RaceTrack} on which the strategy will be applied.
-     *  @param landingRegionsProcessor       the {@link LandingRegionsProcessor} object used to build the path.
+     * @param raceTrack               the {@link RaceTrack} on which the strategy will be applied.
+     * @param landingRegionsProcessor the {@link LandingRegionsProcessor} object used to build the path.
      */
     public LandingRegionsStrategy(RaceTrack raceTrack, LandingRegionsProcessor landingRegionsProcessor) {
         this.raceTrack = raceTrack;
@@ -58,12 +60,14 @@ public class LandingRegionsStrategy implements GameStrategy {
                 Coordinate pathCoordinate = path.get(i);
                 if (availableMoves.contains(pathCoordinate)) {
                     player.makeMove(pathCoordinate);
+                    // Check whether the player has crashed
+                    checkHasCrashed(player);
                     // Remove all coordinates in the path up to and including the chosen one
                     path.subList(0, i + 1).clear();
                     return; // Exit early after making the move
                 }
             }
-            handleFallBackMove(availableMoves,player); // Only called if no move was made
+            handleFallBackMove(availableMoves, player); // Only called if no move was made
         } else {
             player.setHasCrashed(true);
         }
@@ -97,6 +101,8 @@ public class LandingRegionsStrategy implements GameStrategy {
             }
         }
         player.makeMove(fallbackMove);
+        // Check if the player has crashed
+        checkHasCrashed(player);
     }
 
 
@@ -122,6 +128,19 @@ public class LandingRegionsStrategy implements GameStrategy {
             }
         }
         return availableMoves;
+    }
+
+    /**
+     * Checks if the specified player has crashed based on their current position and game context.
+     * If so sets the <code>hasCrashed</code> field of the <code>CpuPlayer</code> class to <code>true</code>.
+     *
+     * @param player The {@link CpuPlayer} to check.
+     */
+    @Override
+    public void checkHasCrashed(CpuPlayer player) {
+        if (this.raceTrack.getCellAt(player.getPosition()).cellType() == CellType.WALL) {
+            player.setHasCrashed(true);
+        }
     }
 
     @Override

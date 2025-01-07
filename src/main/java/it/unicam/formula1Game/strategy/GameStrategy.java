@@ -23,4 +23,12 @@ public interface GameStrategy {
      * @return A {@link List} of {@link Coordinate} objects representing the valid moves.
      */
     Set<Coordinate> getAvailableMoves(CpuPlayer player);
+
+    /**
+     * Checks if the specified player has crashed based on their current position and game context.
+     * If so sets the <code>hasCrashed</code> field of the <code>CpuPlayer</code> class to <code>true</code>.
+     *
+     * @param player The {@link CpuPlayer} to check.
+     */
+    void checkHasCrashed(CpuPlayer player);
 }

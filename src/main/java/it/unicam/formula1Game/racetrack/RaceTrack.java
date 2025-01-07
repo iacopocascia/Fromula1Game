@@ -182,7 +182,7 @@ public class RaceTrack {
      *
      * @return A 2D array of strings representing the static grid of the track.
      */
-    private String[][] buildTrackRepresentation() {
+    public String[][] buildTrackRepresentation() {
         String[][] trackRepresentation = new String[height][width];
         for (int row = 0; row < height; row++) {
             for (int column = 0; column < width; column++) {
