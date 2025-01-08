@@ -112,6 +112,9 @@ public class CpuGameEngine implements GameEngine {
         for (CpuPlayer player : this.players) {
             player.makeMove(new Coordinate(player.getPosition().getRow(), player.getPosition().getColumn() - 1));
         }
+        // Print the current state of the game
+        System.out.println("******************** ROUND 1 ********************");
+        System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
     }
 
     /**
@@ -121,7 +124,7 @@ public class CpuGameEngine implements GameEngine {
     @Override
     public void startGame() {
         boolean gameInProgress = true;
-        int round = 1;
+        int round = 2;
         while (gameInProgress) {
             if (!checkEndCondition()) {
                 for (CpuPlayer player : this.players) {
