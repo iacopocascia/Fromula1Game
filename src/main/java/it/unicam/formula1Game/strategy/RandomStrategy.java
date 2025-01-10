@@ -6,18 +6,39 @@ import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.*;
-//TODO javadoc
 
 /**
  * The {@code RandomStrategy} class implements the {@link GameStrategy} interface and provides
- * a randomized strategy for CPU players. The strategy evaluates all possible moves,
- * assigning weights to each based on the cell type.
+ * a pseudo-randomized strategy for CPU players. The strategy evaluates all possible moves,
+ * assigning weights based on cell type, distance from track borders, and player velocity.
+ * This ensures a more refined decision-making process while still maintaining randomness.
  */
 public class RandomStrategy implements GameStrategy {
     /**
      * The {@link RaceTrack} where the game takes place.
      */
     private final RaceTrack raceTrack;
+    /**
+     * Weight for cell type importance in move evaluation.
+     */
+    private static final double CELL_TYPE_WEIGHT = 0.6;
+    /**
+     * Weight for border proximity importance in move evaluation.
+     */
+    private static final double BORDER_WEIGHT = 0.3;
+
+    /**
+     * Weight for velocity factor importance in move evaluation.
+     */
+    private static final double VELOCITY_WEIGHT = 0.1;
+    /**
+     * Ideal velocity for smoother gameplay.
+     */
+    private static final double IDEAL_VELOCITY = 2.0;
+    /**
+     * Standard deviation for Gaussian-like velocity penalty calculation.
+     */
+    private static final double SIGMA_VALUE = 1.0;
 
     /**
      * Constructs a new {@code RandomStrategy} with the specified racetrack.
@@ -30,30 +51,21 @@ public class RandomStrategy implements GameStrategy {
 
     /**
      * Applies the random strategy to the {@link CpuPlayer}.
-     * The player evaluates all possible moves, assigns weights to each move based on cell type,
-     * and then selects a move probabilistically.
+     * The player evaluates all possible moves, assigns weights to each move,
+     * and selects the one with the highest weight.
+     *
+     * @param player the {@link CpuPlayer} using this strategy.
      */
     @Override
     public void applyStrategy(CpuPlayer player) {
-//        Set<Coordinate> availableMoves = getAvailableMoves(player);
-//        if (!availableMoves.isEmpty()) {
-//            List<Coordinate> weightedMoves = evaluateMoves(availableMoves);
-//            // Select a random move from the weighted moves list
-//            Coordinate selectedMove = weightedMoves.get((int) (Math.random() * weightedMoves.size()));
-//            player.makeMove(selectedMove);
-//            checkHasCrashed(player);
-//        } else {
-//            // If there are no available moves left (within the track borders) it means the player is going to crash
-//            player.setHasCrashed(true);
-//        }
         Set<Coordinate> availableMoves = getAvailableMoves(player);
         if (!availableMoves.isEmpty()) {
             List<WeightedMove> weightedMoves = evaluateMoves(availableMoves, player);
             // Select a move based on the highest weight
             Coordinate selectedMove = weightedMoves.stream()
-                    .max(Comparator.comparingDouble(WeightedMove::getWeight))
+                    .max(Comparator.comparingDouble(WeightedMove::weight))
                     .orElseThrow()
-                    .getCoordinate();
+                    .coordinate();
             player.makeMove(selectedMove);
             checkHasCrashed(player);
         } else {
@@ -62,10 +74,10 @@ public class RandomStrategy implements GameStrategy {
     }
 
     /**
-     * Computes the available moves as the {@link it.unicam.formula1Game.cell.Cell} objects that are
-     * within the {@link RaceTrack} boundaries.
+     * Computes all possible moves for the {@link CpuPlayer} that are within the {@link RaceTrack} boundaries.
      *
-     * @return a {@link List} of {@link Coordinate} objects that represent the available moves.
+     * @param player the {@link CpuPlayer} whose moves are being computed.
+     * @return A {@link Set} of {@link Coordinate} objects representing valid moves.
      */
     @Override
     public Set<Coordinate> getAvailableMoves(CpuPlayer player) {
@@ -86,8 +98,8 @@ public class RandomStrategy implements GameStrategy {
     }
 
     /**
-     * Checks if the specified player has crashed based on their current position and game context.
-     * If so sets the <code>hasCrashed</code> field of the <code>CpuPlayer</code> class to <code>true</code>.
+     * Checks if the specified player has crashed based on their current position.
+     * If the player crashes into a {@link CellType#WALL}, their {@code hasCrashed} field is set to {@code true}.
      *
      * @param player The {@link CpuPlayer} to check.
      */
@@ -99,36 +111,13 @@ public class RandomStrategy implements GameStrategy {
     }
 
     /**
-     * Evaluates the available moves for the player, assigning higher weights to moves
-     * leading to favorable cells and lower weights to unfavorable cells.
+     * Evaluates all available moves for the player, assigning weights to each move.
      *
-     * @return A {@link List} of {@link Coordinate} objects representing weighted moves.
+     * @param availableMoves the set of all possible moves.
+     * @param player         the {@link CpuPlayer} whose moves are being evaluated.
+     * @return A {@link List} of {@link WeightedMove} objects representing evaluated moves with weights.
      */
     private List<WeightedMove> evaluateMoves(Set<Coordinate> availableMoves, CpuPlayer player) {
-//        List<Coordinate> weightedMoves = new ArrayList<>();
-//        for (Coordinate move : availableMoves) {
-//            switch (this.raceTrack.getCellAt(move).cellType()) {
-//                case WALL:
-//                    // Add fewer instances for wall cells (weight 1)
-//                    addWeightedMoves(weightedMoves, move, 1);
-//                    break;
-//
-//                case TRACK:
-//                    // Add more instances for track cells (weight 5)
-//                    addWeightedMoves(weightedMoves, move, 10);
-//                    break;
-//
-//                case START:
-//                    addWeightedMoves(weightedMoves, move, 1);
-//                    break;
-//
-//                case FINISH:
-//                    // Add the highest weight for finish cells (weight 10)
-//                    addWeightedMoves(weightedMoves, move, 10);
-//                    break;
-//            }
-//        }
-//        return weightedMoves;
         List<WeightedMove> weightedMoves = new ArrayList<>();
         for (Coordinate move : availableMoves) {
             double weight = calculateMoveWeight(player, move);
@@ -141,9 +130,9 @@ public class RandomStrategy implements GameStrategy {
     /**
      * Calculates the weight of a move based on cell type, distance from borders, and player velocity.
      *
-     * @param player The current {@link CpuPlayer}.
-     * @param move   The move to evaluate.
-     * @return The calculated weight of the move.
+     * @param player The {@link CpuPlayer} making the move.
+     * @param move   The {@link Coordinate} being evaluated.
+     * @return The calculated weight for the move.
      */
     private double calculateMoveWeight(CpuPlayer player, Coordinate move) {
         CellType cellType = this.raceTrack.getCellAt(move).cellType();
@@ -155,17 +144,18 @@ public class RandomStrategy implements GameStrategy {
         };
         // Border penalty: discourage moves closer to borders
         double borderPenalty;
-        if(cellType!=CellType.WALL) {
+        if (cellType != CellType.WALL) {
             double distanceFromBorders = calculateDistanceFromBorders(move);
-            borderPenalty = Math.sqrt(distanceFromBorders); // Penalty calculated using tne sqrt function
-        }else {
-            borderPenalty=0.5; // If the destination cell is a WALL
+            borderPenalty = Math.sqrt(distanceFromBorders); // Penalty calculated using the sqrt function
+        } else {
+            borderPenalty = 0.5; // If the destination cell is a WALL
         }
-        // Velocity factor: penalize high accelerations because of the risk or "stay in place"
+        // Velocity factor: penalize high accelerations because of the risk or the "stay in place" choice using a Gaussian-like function
         double theoreticalVelocity = Math.sqrt(
                 Math.pow(move.getRow() - player.getPosition().getRow(), 2) +
                         Math.pow(move.getColumn() - player.getPosition().getColumn(), 2));
-        double weightedScore = getWeightedScore(theoreticalVelocity, baseWeight, borderPenalty);
+        double velocityPenalty = Math.exp(-Math.pow(theoreticalVelocity - IDEAL_VELOCITY, 2) / (2 * Math.pow(SIGMA_VALUE, 2)));
+        double weightedScore = getWeightedScore(velocityPenalty, baseWeight, borderPenalty);
 
         // Further discourage "stay in place" moves
         if (player.getPosition().equals(move)) {
@@ -174,21 +164,25 @@ public class RandomStrategy implements GameStrategy {
 
         return weightedScore;
     }
-
-    private static double getWeightedScore(double theoreticalVelocity, double baseWeight, double borderPenalty) {
-        double velocityPenalty = theoreticalVelocity > 0 ? 1 / theoreticalVelocity : 0.5; // Avoid division by zero
-
-        // Weights to control importance
-        double cellTypeWeight = 0.6;  // Weight for cell type importance
-        double borderWeight = 0.3;    // Weight for border proximity
-        double velocityWeight = 0.1;  // Weight for velocity smoothness
-
-        // Combine the factors using weighted sum
-        return (baseWeight * cellTypeWeight) +
-                (borderPenalty * borderWeight) +
-                (velocityPenalty * velocityWeight);
+    /**
+     * Combines cell type weight, border penalty, and velocity penalty into a single score.
+     *
+     * @param velocityPenalty The velocity penalty factor.
+     * @param baseWeight      The weight based on the cell type.
+     * @param borderPenalty   The weight based on border proximity.
+     * @return The combined weighted score.
+     */
+    private static double getWeightedScore(double velocityPenalty, double baseWeight, double borderPenalty) {
+        return (baseWeight * CELL_TYPE_WEIGHT) +
+                (borderPenalty * BORDER_WEIGHT) +
+                (velocityPenalty * VELOCITY_WEIGHT);
     }
-
+    /**
+     * Calculates the distance of a move from the closest border.
+     *
+     * @param move The move to evaluate.
+     * @return The distance from the closest border.
+     */
     private int calculateDistanceFromBorders(Coordinate move) {
         int distanceToTop = calculateDistanceInDirection(-1, 0, move);
         int distanceToRight = calculateDistanceInDirection(0, 1, move);
@@ -201,9 +195,9 @@ public class RandomStrategy implements GameStrategy {
     /**
      * Calculates the distance from a given move to the nearest wall in a specified direction.
      *
-     * @param move    The starting coordinate.
      * @param rowStep The row increment for the direction (-1 for up, 1 for down, 0 for no vertical movement).
      * @param colStep The column increment for the direction (-1 for left, 1 for right, 0 for no horizontal movement).
+     * @param move    The starting coordinate.
      * @return The distance to the nearest wall in the specified direction.
      */
     private int calculateDistanceInDirection(int rowStep, int colStep, Coordinate move) {
@@ -217,19 +211,6 @@ public class RandomStrategy implements GameStrategy {
             }
         }
         return distance;
-    }
-
-    /**
-     * Adds a move to the weighted moves list multiple times based on the weight.
-     *
-     * @param weightedMoves The list to which the move will be added.
-     * @param move          The {@link Coordinate} representing the move.
-     * @param weight        The weight determining how many times the move will be added.
-     */
-    private void addWeightedMoves(List<Coordinate> weightedMoves, Coordinate move, int weight) {
-        for (int i = 0; i < weight; i++) {
-            weightedMoves.add(move);
-        }
     }
 
     @Override
