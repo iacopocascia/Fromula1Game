@@ -89,17 +89,6 @@ public class Coordinate {
     }
 
     /**
-     * Calculates the Manhattan distance between two coordinates.
-     *
-     * @param a The first coordinate.
-     * @param b The second coordinate.
-     * @return The distance value between the two coordinates.
-     */
-    public static int calculateDistance(Coordinate a, Coordinate b) {
-        return Math.abs(a.getRow() - b.getRow()) + Math.abs(a.getColumn() - b.getColumn());
-    }
-
-    /**
      * Returns a string representation of this coordinate.
      * The format is "(row;column)".
      *

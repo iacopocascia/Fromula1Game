@@ -6,6 +6,10 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.exceptions.InvalidFileFormatException;
 import it.unicam.formula1Game.parser.*;
 import it.unicam.formula1Game.racetrack.RaceTrack;
+import it.unicam.formula1Game.strategy.GameStrategy;
+import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsDetector;
+import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsStrategy;
+import it.unicam.formula1Game.strategy.weightedRandomStrategy.WeightedRandomStrategy;
 import it.unicam.formula1Game.validator.ConfigurationFileValidator;
 import it.unicam.formula1Game.validator.ITrackValidator;
 import it.unicam.formula1Game.validator.JsonValidator;
@@ -13,6 +17,8 @@ import it.unicam.formula1Game.validator.RaceTrackValidator;
 
 import java.io.File;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 import static it.unicam.formula1Game.userInteraction.RequestConfigurationFile.requestConfigurationFile;
@@ -54,9 +60,11 @@ public class Formula1ApplicationCpu implements IFormula1Application {
         this.trackValidator = trackValidator;
         this.gameEngine = gameEngine;
     }
+
     /**
      * Runs the Formula 1 game application by requesting a configuration file.
      * For testing purposes the <code>run</code> methods have been split.
+     *
      * @throws Exception if any step in the process fails.
      */
     @Override
@@ -64,6 +72,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
         File raceTrackConfigurationFile = requestConfigurationFile();
         run(raceTrackConfigurationFile); // Call the overloaded method
     }
+
     /**
      * Runs the Formula 1 game application with the specified configuration file by performing the following steps:
      * <ul>
@@ -85,6 +94,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
             // Validate the track configuration
             if (validate(raceTrack)) {
                 gameEngine.initializeEnvironment(raceTrack);
+                gameEngine.assignStrategies(chooseStrategies(raceTrack));
                 gameEngine.makeFirstMove();
                 gameEngine.startGame();
             } else {
@@ -106,6 +116,19 @@ public class Formula1ApplicationCpu implements IFormula1Application {
                 trackValidator.validateHeight(raceTrack.getHeight()) &&
                 trackValidator.validateWidth(raceTrack.getWidth()) &&
                 trackValidator.validateNumberOfPlayers(raceTrack.getNumberOfPlayers());
+    }
+
+    /**
+     * Selects strategies for the CPU players in the game.
+     *
+     * @param raceTrack The {@link RaceTrack} for which the strategies will be assigned.
+     * @return A {@link List} of {@link GameStrategy} objects representing the strategies.
+     */
+    private List<GameStrategy> chooseStrategies(RaceTrack raceTrack) {
+        List<GameStrategy> strategies = new ArrayList<>();
+        strategies.add(new WeightedRandomStrategy(raceTrack));
+        strategies.add(new LandingRegionsStrategy(raceTrack, new LandingRegionsDetector()));
+        return strategies;
     }
 
     /**

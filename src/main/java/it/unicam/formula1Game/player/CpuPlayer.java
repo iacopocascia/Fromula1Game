@@ -24,7 +24,7 @@ public class CpuPlayer implements Player {
     /**
      * The player's last move as a coordinate difference.
      */
-    private Coordinate lastMove;
+    private final Coordinate lastMove;
     /**
      * The player's current velocity, calculated based on the last move.
      */
@@ -179,7 +179,7 @@ public class CpuPlayer implements Player {
     public String toString() {
         return "CpuPlayer n.: " + id +
                 "\n at position: " + position +
-                "\n with final velocity: " + velocity +
+                "\n with velocity: " + velocity +
                 "\n using strategy: " + strategy;
     }
 

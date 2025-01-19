@@ -1,11 +1,9 @@
 package it.unicam.formula1Game.engine;
 
 import it.unicam.formula1Game.cell.CellType;
-import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.player.Player;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,37 +31,65 @@ public class GameVisualizer {
     }
 
     /**
-     * Appends the status of players to the <code>StringBuilder</code>, indicating their positions or crash statuses.
+     * Appends the status of players to the <code>StringBuilder</code>, indicating their positions,
+     * crash statuses, or a summary of all players at the end of the game.
      *
-     * @param sb      the <code>StringBuilder</code> used to build the final output.
-     * @param players the list of {@link Player} objects to include in the status output.
+     * @param sb        the <code>StringBuilder</code> used to build the final output.
+     * @param raceTrack the {@link RaceTrack} object representing the game grid.
+     * @param players   the list of {@link Player} objects to include in the status output.
      */
     private static void appendPlayerStatus(StringBuilder sb, RaceTrack raceTrack, List<? extends Player> players) {
-        boolean allPlayersOnStart = true;
-        List<Integer> crashedPlayers = new ArrayList<>();
-        for (Player player : players) {
-            if (player.hasCrashed()) {
-                crashedPlayers.add(player.getId());
-            } else {
-                // If the player has moved from the start, they are no longer all on the start line
-                Coordinate position = player.getPosition();
-                if (!raceTrack.getGrid()[position.getRow()][position.getColumn()].cellType().equals(CellType.START)) {
-                    allPlayersOnStart = false;
-                }
-            }
-        }
-        // If all players are still at the start, add a message
+        appendPlayersOnStartMessage(sb, raceTrack, players);
+        appendCrashedPlayers(sb, players);
+        appendPlayerSummaries(sb, players);
+    }
+    /**
+     * Appends a message to the <code>StringBuilder</code> if all players are still on the start line.
+     *
+     * @param sb        the <code>StringBuilder</code> used to build the final output.
+     * @param raceTrack the {@link RaceTrack} object representing the game grid.
+     * @param players   the list of {@link Player} objects to check.
+     */
+    private static void appendPlayersOnStartMessage(StringBuilder sb, RaceTrack raceTrack, List<? extends Player> players) {
+        boolean allPlayersOnStart = players.stream().allMatch(player ->
+                !player.hasCrashed() &&
+                        raceTrack.getGrid()[player.getPosition().getRow()][player.getPosition().getColumn()]
+                                .cellType()
+                                .equals(CellType.START)
+        );
         if (allPlayersOnStart) {
-            sb.append("Players on their marks\n");
+            sb.append("**************PLAYERS ON THEIR MARKS**************\n");
         }
-        // If there are crashed players, add a list of crashed players
+    }
+    /**
+     * Appends a list of crashed players to the <code>StringBuilder</code>.
+     *
+     * @param sb      the <code>StringBuilder</code> used to build the final output.
+     * @param players the list of {@link Player} objects to check for crashes.
+     */
+    private static void appendCrashedPlayers(StringBuilder sb, List<? extends Player> players) {
+        List<Integer> crashedPlayers = players.stream()
+                .filter(Player::hasCrashed)
+                .map(Player::getId)
+                .toList();
         if (!crashedPlayers.isEmpty()) {
-            sb.append("Crashed players: ");
-            for (int id : crashedPlayers) {
-                sb.append(id).append(" ");
-            }
-            sb.append("\n");
+            sb.append("CRASHED PLAYERS: ").append(String.join(" ", crashedPlayers.stream()
+                    .map(String::valueOf)
+                    .toArray(String[]::new))).append("\n");
         }
+    }
+    /**
+     * Appends a summary of all players' statuses using their <code>toString</code> representation,
+     * but only includes players who have not crashed.
+     *
+     * @param sb      the <code>StringBuilder</code> used to build the final output.
+     * @param players the list of {@link Player} objects to summarize.
+     */
+    private static void appendPlayerSummaries(StringBuilder sb, List<? extends Player> players) {
+        sb.append("\n**************PLAYERS' STATUS**************\n");
+        players.stream()
+                .filter(player -> !player.hasCrashed()) // Include only players who have not crashed
+                .forEach(player -> sb.append(player).append("\n"));
     }
 
 

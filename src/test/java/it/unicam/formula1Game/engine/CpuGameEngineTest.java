@@ -5,7 +5,7 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.parser.JsonParser;
 import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
-import it.unicam.formula1Game.strategy.RandomStrategy;
+import it.unicam.formula1Game.strategy.weightedRandomStrategy.WeightedRandomStrategy;
 import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsStrategy;
 import org.junit.jupiter.api.Test;
 
@@ -35,10 +35,10 @@ public class CpuGameEngineTest {
             playersStartingPositions.add(this.gameEngine.getPlayers()[i].getPosition());
         }
         assertTrue(this.gameEngine.getRaceTrack().getStartCoordinates().containsAll(playersStartingPositions));
-        if (this.gameEngine.getPlayers()[0].getStrategy() instanceof RandomStrategy) {
+        if (this.gameEngine.getPlayers()[0].getStrategy() instanceof WeightedRandomStrategy) {
             assertInstanceOf(LandingRegionsStrategy.class, this.gameEngine.getPlayers()[1].getStrategy());
         } else {
-            assertInstanceOf(RandomStrategy.class, this.gameEngine.getPlayers()[1].getStrategy());
+            assertInstanceOf(WeightedRandomStrategy.class, this.gameEngine.getPlayers()[1].getStrategy());
         }
     }
 

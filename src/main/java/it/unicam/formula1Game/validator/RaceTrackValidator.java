@@ -1,8 +1,8 @@
 package it.unicam.formula1Game.validator;
 
-import it.unicam.formula1Game.racetrack.Constants;
+import it.unicam.formula1Game.racetrack.RacetrackUtils;
 
-import static it.unicam.formula1Game.racetrack.Constants.*;
+import static it.unicam.formula1Game.racetrack.RacetrackUtils.*;
 
 /**
  * The {@code TrackValidator} class implements the {@link ITrackValidator} interface
@@ -12,7 +12,7 @@ public class RaceTrackValidator implements ITrackValidator {
 
     /**
      * Validates the width of the racetrack.
-     * The width is considered valid if it is greater than 0 and less than {@link Constants#MAX_WIDTH}.
+     * The width is considered valid if it is greater than 0 and less than {@link RacetrackUtils#MAX_WIDTH}.
      *
      * @param width The width of the track to validate.
      * @return {@code true} if the width is valid, {@code false} otherwise.
@@ -24,7 +24,7 @@ public class RaceTrackValidator implements ITrackValidator {
 
     /**
      * Validates the height of the racetrack.
-     * The height is considered valid if it is greater than 0 and less than {@link Constants#MAX_HEIGHT}.
+     * The height is considered valid if it is greater than 0 and less than {@link RacetrackUtils#MAX_HEIGHT}.
      *
      * @param height The height of the track to validate.
      * @return {@code true} if the height is valid, {@code false} otherwise.
@@ -36,8 +36,8 @@ public class RaceTrackValidator implements ITrackValidator {
 
     /**
      * Validates the number of players on the racetrack.
-     * The number is valid if it falls within the range defined by {@link Constants#MIN_PLAYERS}
-     * and {@link Constants#MAX_PLAYERS}.
+     * The number is valid if it falls within the range defined by {@link RacetrackUtils#MIN_PLAYERS}
+     * and {@link RacetrackUtils#MAX_PLAYERS}.
      *
      * @param numberOfPlayers The number of players to validate.
      * @return {@code true} if the number of players is within the allowed range, {@code false} otherwise.

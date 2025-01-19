@@ -13,8 +13,8 @@ public interface ILandingRegionsDetector {
     /**
      * Detects landing regions on a racetrack.
      *
-     * @return A {@link List} of {@link Segment} objects representing the detected landing regions.
+     * @return A {@link List} of {@link LandingRegion} objects representing the detected landing regions.
      */
-    List<Segment> detectLandingRegions(RaceTrack raceTrack);
+    List<LandingRegion> detectLandingRegions(RaceTrack raceTrack);
 }
 

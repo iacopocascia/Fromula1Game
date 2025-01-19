@@ -1,9 +1,9 @@
 package it.unicam.formula1Game.racetrack;
 
 /**
- * Some constant values that describe the {@link RaceTrack} class.
+ * A utility class that provides features for the {@link RaceTrack} class.
  */
-public class Constants {
+public class RacetrackUtils {
     /**
      * The maximum number of players for a race
      */

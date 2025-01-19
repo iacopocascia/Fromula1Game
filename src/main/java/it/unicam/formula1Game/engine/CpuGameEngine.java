@@ -6,11 +6,6 @@ import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.player.Player;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 import it.unicam.formula1Game.strategy.GameStrategy;
-import it.unicam.formula1Game.strategy.RandomStrategy;
-import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsDetector;
-import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsElaborator;
-import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsProcessor;
-import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsStrategy;
 
 import java.util.*;
 
@@ -42,8 +37,7 @@ public class CpuGameEngine implements GameEngine {
             this.raceTrack = raceTrack;
             this.players = new CpuPlayer[raceTrack.getNumberOfPlayers()];
             placeCpuPlayers();
-            assignStrategies();
-            System.out.println("Game Initialized");
+            System.out.println("*****************GAME INITIALIZED*****************");
             System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
         } catch (InvalidConfigurationException e) {
             System.out.println("An error occurred during players placement");
@@ -88,23 +82,6 @@ public class CpuGameEngine implements GameEngine {
     }
 
     /**
-     * Assigns {@link GameStrategy} instances to each player in a round-robin fashion.
-     */
-    private void assignStrategies() {
-        List<GameStrategy> gameStrategies = new ArrayList<>();
-        gameStrategies.add(new RandomStrategy(this.raceTrack));
-        gameStrategies.add(new LandingRegionsStrategy(
-                this.raceTrack,
-                new LandingRegionsProcessor(
-                        new LandingRegionsDetector(),
-                        new LandingRegionsElaborator())
-        ));
-        for (int i = 0; i < this.players.length; i++) {
-            this.players[i].setStrategy(gameStrategies.get(i % gameStrategies.size()));
-        }
-    }
-
-    /**
      * Makes the players move left as their first move.
      */
     @Override
@@ -112,9 +89,19 @@ public class CpuGameEngine implements GameEngine {
         for (CpuPlayer player : this.players) {
             player.makeMove(new Coordinate(player.getPosition().getRow(), player.getPosition().getColumn() - 1));
         }
-        // Print the current state of the game
-        System.out.println("******************** ROUND 1 ********************");
-        System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
+        printCurrentState(1);
+    }
+
+    /**
+     * Assigns {@link GameStrategy} instances to each player using a Round-Robin algorithm.
+     *
+     * @param strategies The <code>List</code> of {@link GameStrategy} objects to assign.
+     */
+    @Override
+    public void assignStrategies(List<GameStrategy> strategies) {
+        for (int i = 0; i < this.players.length; i++) {
+            this.players[i].setStrategy(strategies.get(i % strategies.size()));
+        }
     }
 
     /**
@@ -123,21 +110,14 @@ public class CpuGameEngine implements GameEngine {
      */
     @Override
     public void startGame() {
-        boolean gameInProgress = true;
         int round = 2;
-        while (gameInProgress) {
-            if (!checkEndCondition()) {
-                for (CpuPlayer player : this.players) {
-                    if (!player.hasCrashed()) {
-                        player.applyStrategy();
-                    }
+        while (!checkEndCondition()) {
+            for (CpuPlayer player : this.players) {
+                if (!player.hasCrashed()) {
+                    player.applyStrategy();
                 }
-            } else {
-                gameInProgress = false;
             }
-            // Print the current state of the game after each round
-            System.out.println("******************** ROUND " + round + " ********************");
-            System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
+            printCurrentState(round);
             round++;
         }
         if (this.winner == null) {
@@ -149,13 +129,23 @@ public class CpuGameEngine implements GameEngine {
     }
 
     /**
+     * Prints the current state of the game using the {@link GameVisualizer} class.
+     *
+     * @param round the round's progressive number.
+     */
+    private void printCurrentState(int round) {
+        System.out.println("******************** ROUND " + round + " ********************");
+        System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
+    }
+
+    /**
      * Ends the game and announces the winner.
      *
      * @return the {@link CpuPlayer} who won the game.
      */
     @Override
     public Player endGame() {
-        System.out.println("******THE WINNER IS******\n");
+        System.out.println("*****************THE WINNER IS******************\n");
         System.out.println(this.winner);
         return this.winner;
     }
