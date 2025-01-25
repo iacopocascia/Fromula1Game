@@ -1,9 +1,12 @@
-package it.unicam.formula1Game.strategy.weightedRandomStrategy;
+package it.unicam.formula1Game.parser.weightedRandomStrategy;
 
 import it.unicam.formula1Game.cell.CellType;
 import it.unicam.formula1Game.cell.Coordinate;
 import it.unicam.formula1Game.racetrack.RaceTrack;
 
+/**
+ * A utility class that provides features for the {@link WeightedRandomStrategy} class.
+ */
 public class WeightedRandomStrategyUtils {
     /**
      * Weight for cell type importance in move evaluation.
@@ -25,11 +28,12 @@ public class WeightedRandomStrategyUtils {
     /**
      * Penalty constant for the "stay in place" choice.
      */
-    public static final double STAY_IN_PLACE_PENALTY=-10.0;
+    public static final double STAY_IN_PLACE_PENALTY = -10.0;
     /**
      * Standard deviation for Gaussian-like velocity penalty calculation.
      */
     public static final double SIGMA_VALUE = 1.0;
+
     /**
      * Calculates the distance of a move from the closest border.
      *
@@ -37,10 +41,10 @@ public class WeightedRandomStrategyUtils {
      * @return The distance from the closest border.
      */
     public static int calculateDistanceFromBorders(Coordinate move, RaceTrack raceTrack) {
-        int distanceToTop = calculateDistanceInDirection(move,-1, 0, raceTrack);
-        int distanceToRight = calculateDistanceInDirection(move,0, 1, raceTrack);
-        int distanceToBottom = calculateDistanceInDirection(move,1, 0, raceTrack);
-        int distanceToLeft = calculateDistanceInDirection(move,0, -1, raceTrack);
+        int distanceToTop = calculateDistanceInDirection(move, -1, 0, raceTrack);
+        int distanceToRight = calculateDistanceInDirection(move, 0, 1, raceTrack);
+        int distanceToBottom = calculateDistanceInDirection(move, 1, 0, raceTrack);
+        int distanceToLeft = calculateDistanceInDirection(move, 0, -1, raceTrack);
         return Math.min(Math.min(distanceToTop, distanceToBottom), Math.min(distanceToLeft, distanceToRight));
     }
 

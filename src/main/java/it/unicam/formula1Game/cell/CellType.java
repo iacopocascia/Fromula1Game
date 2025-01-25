@@ -1,7 +1,7 @@
 package it.unicam.formula1Game.cell;
 
 /**
- * Enum representing the various types of cells that build up the track.
+ * Enum representing the types of cells that build up the track.
  * The cell types are used to represent walls,
  * the track itself, the start line, and finish line.
  */

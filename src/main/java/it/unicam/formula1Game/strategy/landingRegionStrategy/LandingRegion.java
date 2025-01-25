@@ -4,6 +4,11 @@ import it.unicam.formula1Game.cell.Coordinate;
 
 import java.util.Set;
 
+/**
+ * Represents a landing region within the game grid.
+ * A landing region corresponds to a critical point of interest (e.g. corner) on the {@link it.unicam.formula1Game.racetrack.RaceTrack}
+ * where players must adjust their strategy for optimal performance.
+ */
 public class LandingRegion {
     private final Set<Coordinate> cells;
     private int width;
@@ -11,31 +16,33 @@ public class LandingRegion {
 
     public LandingRegion(Set<Coordinate> cells) {
         this.cells = cells;
-        this.width=0;
-        this.height=0;
+        this.width = 0;
+        this.height = 0;
     }
 
     public void addNewCell(Coordinate coordinate) {
         this.cells.add(coordinate);
     }
+
     /**
      * Calculates and caches the width of the landing region (difference in columns).
      *
      * @return The width of the landing region.
      */
     public int getWidth() {
-        if(width==0){
+        if (width == 0) {
             calculateDimensions();
         }
         return width;
     }
+
     /**
      * Calculates and caches the height of the landing region (difference in rows).
      *
      * @return The height of the landing region.
      */
     public int getHeight() {
-        if(height==0){
+        if (height == 0) {
             calculateDimensions();
         }
         return height;

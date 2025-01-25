@@ -5,6 +5,7 @@ import it.unicam.formula1Game.racetrack.RaceTrack;
 
 import java.util.HashSet;
 import java.util.Set;
+
 /**
  * A utility class that provides common methods for game strategies.
  */
@@ -42,7 +43,7 @@ public class StrategyUtils {
      * @param raceTrack      The {@link RaceTrack} where the game is being played.
      * @return A {@link Set} of {@link Coordinate} objects representing valid moves from the principal point.
      */
-    public static Set<Coordinate> getAvailableMoves(Coordinate principalPoint, RaceTrack raceTrack){
+    public static Set<Coordinate> getAvailableMoves(Coordinate principalPoint, RaceTrack raceTrack) {
         Set<Coordinate> moves = new HashSet<>();
         for (int rowShift = -1; rowShift <= 1; rowShift++) {
             for (int colShift = -1; colShift <= 1; colShift++) {

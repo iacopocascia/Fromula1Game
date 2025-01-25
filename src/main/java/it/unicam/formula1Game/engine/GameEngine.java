@@ -34,6 +34,7 @@ public interface GameEngine {
     /**
      * Checks if the end condition for the game is met.
      * This method should be called after each move to determine whether the game should end.
+     *
      * @return {@code true} if there is an end condition, {@code false} otherwise.
      */
     boolean checkEndCondition();
@@ -42,6 +43,7 @@ public interface GameEngine {
      * Makes the players do their first move.
      */
     void makeFirstMove();
+
     /**
      * Assigns {@link GameStrategy} instances to each player.
      */

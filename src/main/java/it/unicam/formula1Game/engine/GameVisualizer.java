@@ -43,6 +43,7 @@ public class GameVisualizer {
         appendCrashedPlayers(sb, players);
         appendPlayerSummaries(sb, players);
     }
+
     /**
      * Appends a message to the <code>StringBuilder</code> if all players are still on the start line.
      *
@@ -61,6 +62,7 @@ public class GameVisualizer {
             sb.append("**************PLAYERS ON THEIR MARKS**************\n");
         }
     }
+
     /**
      * Appends a list of crashed players to the <code>StringBuilder</code>.
      *
@@ -78,6 +80,7 @@ public class GameVisualizer {
                     .toArray(String[]::new))).append("\n");
         }
     }
+
     /**
      * Appends a summary of all players' statuses using their <code>toString</code> representation,
      * but only includes players who have not crashed.

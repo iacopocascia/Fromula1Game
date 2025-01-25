@@ -1,4 +1,5 @@
 package it.unicam.formula1Game.application;
+
 /**
  * Defines the contract for a Formula 1 game application.
  * Implementations of this interface should provide the logic to run the application.

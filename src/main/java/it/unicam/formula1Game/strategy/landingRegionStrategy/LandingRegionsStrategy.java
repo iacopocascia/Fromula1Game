@@ -14,9 +14,7 @@ import static it.unicam.formula1Game.strategy.StrategyUtils.calculateTheoretical
 import static it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsStrategyUtils.*;
 
 /**
- * Implements a strategy for navigating a racetrack by focusing on landing regions.
- * Landing regions represent critical points of interest (e.g. corners) where
- * players must adjust their strategy for optimal performance.
+ * Implements a strategy for navigating a racetrack by focusing on {@link LandingRegion} objects.
  */
 public class LandingRegionsStrategy implements GameStrategy {
     private final RaceTrack raceTrack;

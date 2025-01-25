@@ -6,7 +6,7 @@ import java.io.File;
  * The {@code JsonValidator} class implements the {@link ConfigurationFileValidator} interface.
  * It provides functionality to validate whether a configuration file is in JSON format.
  */
-public class JsonValidator implements ConfigurationFileValidator{
+public class JsonValidator implements ConfigurationFileValidator {
     /**
      * Validates the given configuration file by checking if its name ends with ".json".
      *
