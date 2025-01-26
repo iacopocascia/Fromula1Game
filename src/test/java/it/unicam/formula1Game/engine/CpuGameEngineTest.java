@@ -5,7 +5,7 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.parser.JsonParser;
 import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
-import it.unicam.formula1Game.parser.weightedRandomStrategy.WeightedRandomStrategy;
+import it.unicam.formula1Game.strategy.weightedRandomStrategy.WeightedRandomStrategy;
 import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsStrategy;
 import org.junit.jupiter.api.Test;
 

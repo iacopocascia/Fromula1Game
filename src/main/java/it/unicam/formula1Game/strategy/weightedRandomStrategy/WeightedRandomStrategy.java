@@ -1,4 +1,4 @@
-package it.unicam.formula1Game.parser.weightedRandomStrategy;
+package it.unicam.formula1Game.strategy.weightedRandomStrategy;
 
 import it.unicam.formula1Game.cell.CellType;
 import it.unicam.formula1Game.cell.Coordinate;
@@ -10,7 +10,7 @@ import it.unicam.formula1Game.strategy.WeightedMove;
 
 import java.util.*;
 
-import static it.unicam.formula1Game.parser.weightedRandomStrategy.WeightedRandomStrategyUtils.*;
+import static it.unicam.formula1Game.strategy.weightedRandomStrategy.WeightedRandomStrategyUtils.*;
 
 
 /**
