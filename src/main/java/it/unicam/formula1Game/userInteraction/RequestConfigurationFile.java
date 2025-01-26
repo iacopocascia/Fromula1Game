@@ -1,7 +1,6 @@
 package it.unicam.formula1Game.userInteraction;
 
 import java.io.File;
-import java.nio.file.NoSuchFileException;
 import java.util.Scanner;
 
 /**
@@ -14,16 +13,21 @@ public class RequestConfigurationFile {
      * and validates its existence and readability.
      *
      * @return a {@link File} object representing the valid configuration file
-     * @throws NoSuchFileException if the specified file does not exist or cannot be read
      */
-    public static File requestConfigurationFile() throws NoSuchFileException {
-        System.out.println("Please enter the JSON configuration file name:");
+    public static File requestConfigurationFile() {
         Scanner scanner = new Scanner(System.in);
-        String fileName = scanner.nextLine();
-        File file = new File(fileName);
+        File file;
+        // Loop until the prompted file is valid
+        while (true) {
+            System.out.println("Please enter the JSON configuration file name:");
+            String fileName = scanner.nextLine();
 
-        if (!(file.exists() && file.canRead())) {
-            throw new NoSuchFileException("File not found or cannot be read.");
+            file = new File(fileName);
+            if (file.exists() && file.canRead()) {
+                break; // Valid file found, exit the loop
+            } else {
+                System.err.println("File not found or cannot be read. Please try again.");
+            }
         }
         return file;
     }

@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "org.example"
@@ -15,6 +16,9 @@ dependencies {
     //Jackson library dependencies
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+}
+application{
+    mainClass="it.unicam.formula1Game.application.Formula1ApplicationCpu"
 }
 
 tasks.test {
