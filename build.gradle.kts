@@ -18,9 +18,17 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 }
 application{
-    mainClass="it.unicam.formula1Game.application.Formula1ApplicationCpu"
+    mainClass.set("it.unicam.formula1Game.application.Formula1ApplicationCpu")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+// Custom task to handle proper input redirection for interactive applications
+tasks.register<JavaExec>("runApp"){
+    group = "application"
+    description = "Run the Formula1Game application with proper input handling"
+    mainClass.set("it.unicam.formula1Game.application.Formula1ApplicationCpu")
+    classpath = sourceSets.main.get().runtimeClasspath
+    standardInput = System.`in` // Redirects input to System.in
 }

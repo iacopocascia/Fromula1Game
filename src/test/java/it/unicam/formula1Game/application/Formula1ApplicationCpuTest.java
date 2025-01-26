@@ -19,7 +19,7 @@ public class Formula1ApplicationCpuTest {
             new CpuGameEngine()
     );
     @Test
-    public void run_test() throws Exception {
+    public void run_test() {
         File validConfigurationFile=new File(filePath);
         assertDoesNotThrow(()->this.application.run(validConfigurationFile));
     }
