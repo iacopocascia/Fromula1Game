@@ -42,7 +42,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
      */
     private final ITrackValidator trackValidator;
     /**
-     * Game engine to manage the game.
+     * Cpu Game engine to manage the game.
      */
     private final CpuGameEngine gameEngine;
 
@@ -52,7 +52,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
      * @param fileParser     the {@link ConfigurationFileParser} to parse configuration files.
      * @param fileValidator  the {@link ConfigurationFileValidator} to validate file formats.
      * @param trackValidator the {@link ITrackValidator} to validate track properties.
-     * @param gameEngine     the {@link GameEngine} to manage the game.
+     * @param gameEngine     the {@link CpuGameEngine} to manage the game.
      */
     public Formula1ApplicationCpu(ConfigurationFileParser fileParser, ConfigurationFileValidator fileValidator, ITrackValidator trackValidator, CpuGameEngine gameEngine) {
         this.fileParser = fileParser;
