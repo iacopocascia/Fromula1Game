@@ -22,9 +22,14 @@ public class CpuGameEngine implements GameEngine {
      */
     private RaceTrack raceTrack;
     /**
-     * The winner of the race
+     * The winner of the race.
      */
     private CpuPlayer winner;
+
+    /**
+     * The game strategies that will be applied by the players in the game.
+     */
+    private List<GameStrategy> strategies;
 
     /**
      * Initializes the game environment by placing players on the track and assigning strategies.
@@ -37,6 +42,7 @@ public class CpuGameEngine implements GameEngine {
             this.raceTrack = raceTrack;
             this.players = new CpuPlayer[raceTrack.getNumberOfPlayers()];
             placeCpuPlayers();
+            assignStrategies();
             System.out.println("*****************GAME INITIALIZED*****************");
             System.out.println(GameVisualizer.visualizeGame(this.raceTrack, Arrays.stream(this.players).toList()));
         } catch (InvalidConfigurationException e) {
@@ -93,14 +99,23 @@ public class CpuGameEngine implements GameEngine {
     }
 
     /**
-     * Assigns {@link GameStrategy} instances to each player using a Round-Robin algorithm.
+     * Sets the <code>strategies</code> field if not already initialized.
      *
-     * @param strategies The <code>List</code> of {@link GameStrategy} objects to assign.
+     * @param strategies A list of {@link GameStrategy} objects.
      */
-    @Override
-    public void assignStrategies(List<GameStrategy> strategies) {
+    public void setStrategies(List<GameStrategy> strategies) {
+        if (this.strategies == null) {
+            this.strategies = strategies;
+        }
+    }
+
+    /**
+     * Assigns the {@link GameStrategy} instances in the <code>strategies</code> field to each player
+     * using a Round-Robin algorithm.
+     */
+    public void assignStrategies() {
         for (int i = 0; i < this.players.length; i++) {
-            this.players[i].setStrategy(strategies.get(i % strategies.size()));
+            this.players[i].setStrategy(this.strategies.get(i % this.strategies.size()));
         }
     }
 

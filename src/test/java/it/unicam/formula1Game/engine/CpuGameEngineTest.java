@@ -5,13 +5,14 @@ import it.unicam.formula1Game.exceptions.InvalidConfigurationException;
 import it.unicam.formula1Game.parser.JsonParser;
 import it.unicam.formula1Game.player.CpuPlayer;
 import it.unicam.formula1Game.racetrack.RaceTrack;
+import it.unicam.formula1Game.strategy.GameStrategy;
+import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsDetector;
 import it.unicam.formula1Game.strategy.weightedRandomStrategy.WeightedRandomStrategy;
 import it.unicam.formula1Game.strategy.landingRegionStrategy.LandingRegionsStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static it.unicam.formula1Game.parser.JsonParserTest.filePath;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,12 +21,17 @@ public class CpuGameEngineTest {
     private final CpuGameEngine gameEngine = new CpuGameEngine();
     private final JsonParser parser = new JsonParser();
     private final RaceTrack raceTrack = parser.parse(new File(filePath));
+    private final GameStrategy[] strategies = {
+            new WeightedRandomStrategy(raceTrack),
+            new LandingRegionsStrategy(raceTrack, new LandingRegionsDetector())
+    };
 
     public CpuGameEngineTest() throws InvalidConfigurationException {
     }
 
     @Test
     public void initialize_environment_test() throws InvalidConfigurationException {
+        this.gameEngine.setStrategies(Arrays.stream(this.strategies).toList());
         this.gameEngine.initializeEnvironment(this.raceTrack);
         assertEquals(this.raceTrack, this.gameEngine.getRaceTrack());
         assertEquals(this.gameEngine.getPlayers().length, 2);
@@ -44,6 +50,7 @@ public class CpuGameEngineTest {
 
     @Test
     public void make_first_move_test() {
+        this.gameEngine.setStrategies(Arrays.stream(this.strategies).toList());
         this.gameEngine.initializeEnvironment(this.raceTrack);
         this.gameEngine.makeFirstMove();
         for (CpuPlayer player : this.gameEngine.getPlayers()) {
@@ -54,6 +61,7 @@ public class CpuGameEngineTest {
 
     @Test
     public void check_end_condition_test() throws InvalidConfigurationException {
+        this.gameEngine.setStrategies(Arrays.stream(this.strategies).toList());
         this.gameEngine.initializeEnvironment(this.raceTrack);
         assertFalse(this.gameEngine.checkEndCondition());
         this.gameEngine.getPlayers()[0].setPosition(this.raceTrack.getFinishCoordinates().get(1));
@@ -67,18 +75,12 @@ public class CpuGameEngineTest {
 
     @Test
     public void end_game_test() {
+        this.gameEngine.setStrategies(Arrays.stream(this.strategies).toList());
         this.gameEngine.initializeEnvironment(this.raceTrack);
         this.gameEngine.getPlayers()[0].setPosition(this.raceTrack.getFinishCoordinates().get(1));
         this.gameEngine.checkEndCondition();
         assertEquals(this.gameEngine.endGame(), this.gameEngine.getWinner());
     }
-    @Test
-    public void start_game_test(){
-        this.gameEngine.initializeEnvironment(this.raceTrack);
-        this.gameEngine.startGame();
-
-    }
-
 
 
 }

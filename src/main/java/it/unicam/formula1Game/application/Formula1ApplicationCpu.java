@@ -44,7 +44,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
     /**
      * Game engine to manage the game.
      */
-    private final GameEngine gameEngine;
+    private final CpuGameEngine gameEngine;
 
     /**
      * Constructs a {@link Formula1ApplicationCpu} with the given dependencies.
@@ -54,7 +54,7 @@ public class Formula1ApplicationCpu implements IFormula1Application {
      * @param trackValidator the {@link ITrackValidator} to validate track properties.
      * @param gameEngine     the {@link GameEngine} to manage the game.
      */
-    public Formula1ApplicationCpu(ConfigurationFileParser fileParser, ConfigurationFileValidator fileValidator, ITrackValidator trackValidator, GameEngine gameEngine) {
+    public Formula1ApplicationCpu(ConfigurationFileParser fileParser, ConfigurationFileValidator fileValidator, ITrackValidator trackValidator, CpuGameEngine gameEngine) {
         this.fileParser = fileParser;
         this.fileValidator = fileValidator;
         this.trackValidator = trackValidator;
@@ -93,8 +93,8 @@ public class Formula1ApplicationCpu implements IFormula1Application {
             RaceTrack raceTrack = fileParser.parse(raceTrackConfigurationFile);
             // Validate the track configuration
             if (validate(raceTrack)) {
+                gameEngine.setStrategies(chooseStrategies(raceTrack));
                 gameEngine.initializeEnvironment(raceTrack);
-                gameEngine.assignStrategies(chooseStrategies(raceTrack));
                 gameEngine.makeFirstMove();
                 gameEngine.startGame();
             } else {

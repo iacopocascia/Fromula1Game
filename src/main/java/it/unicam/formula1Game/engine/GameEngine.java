@@ -2,9 +2,6 @@ package it.unicam.formula1Game.engine;
 
 import it.unicam.formula1Game.player.Player;
 import it.unicam.formula1Game.racetrack.RaceTrack;
-import it.unicam.formula1Game.strategy.GameStrategy;
-
-import java.util.List;
 
 /**
  * The {@code GameEngine} interface defines the main logic for running a game.
@@ -43,10 +40,5 @@ public interface GameEngine {
      * Makes the players do their first move.
      */
     void makeFirstMove();
-
-    /**
-     * Assigns {@link GameStrategy} instances to each player.
-     */
-    void assignStrategies(List<GameStrategy> strategies);
 
 }
